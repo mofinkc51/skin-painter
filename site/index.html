@@ -66,6 +66,50 @@ select{font:inherit;font-size:13px;border:1px solid var(--line);background:var(-
 .drop{position:fixed;inset:0;display:grid;place-items:center;background:color-mix(in srgb,var(--bg) 82%,transparent);border:3px dashed var(--accent);font-family:var(--font-display);font-size:22px;z-index:20}
 .toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:8px 14px;border-radius:8px;font-size:13px;z-index:30;max-width:calc(100% - 32px)}
 .adjust{border-top:1px solid var(--line);padding-top:12px}
+.itembar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:6px 8px}
+.itembar .crumb{flex:1 1 220px;min-width:0;display:flex;align-items:baseline;gap:6px;overflow:hidden;white-space:nowrap}
+.itembar .crumb .char{color:var(--muted);font-size:12.5px}
+.itembar .crumb strong{font-weight:600;overflow:hidden;text-overflow:ellipsis}
+.itembar .crumb .raw{font-family:var(--font-mono);font-size:11.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis}
+.pos{font-family:var(--font-mono);font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.badge{font-size:11px;font-weight:600;padding:1px 7px;border-radius:999px;background:var(--chip);color:var(--muted);border:1px solid var(--line);white-space:nowrap}
+.badge.edited{background:color-mix(in srgb,var(--accent) 16%,var(--panel));color:var(--accent);border-color:color-mix(in srgb,var(--accent) 40%,var(--line))}
+.btn.lib{font-weight:600}
+.btn.lib .count{font-family:var(--font-mono);font-size:11.5px;color:var(--muted)}
+.scrim{position:fixed;inset:0;background:color-mix(in srgb,#000 38%,transparent);z-index:40}
+.drawer{position:fixed;top:0;bottom:0;left:0;width:min(460px,100%);background:var(--panel);border-right:1px solid var(--line);z-index:41;display:flex;flex-direction:column;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);box-shadow:0 10px 40px rgba(0,0,0,.25)}
+.drawer-head{display:flex;align-items:center;gap:10px;padding:14px 14px 8px}
+.drawer-head h2{font-family:var(--font-display);font-weight:500;font-size:18px;margin:0;flex:1}
+.drawer-body{flex:1;min-height:0;overflow:auto;padding:0 14px 16px;display:flex;flex-direction:column;gap:12px}
+.lib-empty{display:flex;flex-direction:column;gap:12px;padding:6px 0}
+.lib-empty p{margin:0;max-width:52ch}
+.lib-empty code,.mono{font-family:var(--font-mono);font-size:12px}
+.lib-src{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;font-size:12.5px;color:var(--muted)}
+.lib-src strong{color:var(--fg);font-family:var(--font-mono);font-weight:500}
+.lib-src .btn{padding:3px 9px;font-size:12px;margin-left:auto}
+.search{font:inherit;font-size:14px;width:100%;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:8px;padding:8px 10px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:inherit;font-size:12.5px;border:1px solid var(--line);background:var(--chip);color:var(--fg);border-radius:999px;padding:4px 10px;cursor:pointer;display:inline-flex;gap:5px;align-items:baseline}
+.chip .n{font-family:var(--font-mono);font-size:11px;color:var(--muted)}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+.chip[aria-pressed="true"] .n{color:inherit;opacity:.8}
+.chip:focus-visible,.card:focus-visible,.search:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(122px,1fr));gap:8px}
+.card{font:inherit;text-align:left;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:10px;padding:6px;cursor:pointer;display:flex;flex-direction:column;gap:5px;min-width:0}
+.card:hover{border-color:var(--muted)}
+.card[aria-current="true"]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.card .thumb{aspect-ratio:1;max-width:100%;border-radius:6px;overflow:hidden;background:repeating-conic-gradient(var(--chip) 0 25%,var(--panel) 0 50%) 0 0/14px 14px;display:grid;place-items:center}
+.card .thumb img{width:100%;height:100%;object-fit:cover;image-rendering:pixelated}
+.card .thumb .none{font-size:11px;color:var(--muted);text-align:center;padding:6px}
+.card .nm{font-size:12.5px;font-weight:600;line-height:1.25;overflow-wrap:anywhere}
+.card .meta{display:flex;flex-wrap:wrap;gap:4px;align-items:center;font-size:11px;color:var(--muted)}
+.lib-note{font-size:12px;color:var(--muted);margin:0}
+.recent-items{display:flex;flex-wrap:wrap;gap:6px}
+.dialog{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(420px,calc(100% - 32px));background:var(--panel);color:var(--fg);border:1px solid var(--line);border-radius:12px;padding:16px;z-index:61;display:flex;flex-direction:column;gap:14px;box-shadow:0 10px 40px rgba(0,0,0,.3)}
+.dialog p{margin:0}
+.dialog .acts{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
+#dlgScrim{z-index:60}
 @media (max-width:900px){
   html,body{height:auto}
   main{grid-template-columns:1fr;grid-template-rows:auto}
@@ -82,11 +126,20 @@ select{font:inherit;font-size:13px;border:1px solid var(--line);background:var(-
   <h1>Skin Texture Painter</h1>
   <span class="files" id="fileinfo">ตัวอย่าง: กล่อง UV — เปิดไฟล์ .obj + .png ของคุณเพื่อเริ่ม</span>
   <input type="file" id="fileInput" accept=".obj,.png,.jpg,.jpeg" multiple hidden>
-  <button class="btn" id="openBtn">เปิดไฟล์ .obj / .png</button>
+  <button class="btn" id="openBtn" title="เปิด .obj กับ .png ทีละคู่ โดยไม่ใช้คลังชุด">เปิดไฟล์เดี่ยว</button>
   <button class="btn" id="undoBtn" title="Ctrl+Z" disabled>ย้อนกลับ</button>
   <button class="btn" id="redoBtn" title="Ctrl+Shift+Z" disabled>ทำซ้ำ</button>
-  <button class="btn primary" id="saveBtn">บันทึก PNG</button>
+  <button class="btn" id="saveFolderBtn" hidden title="เขียนลงโฟลเดอร์ _skins ข้าง ๆ ไฟล์เกม ไม่ทับต้นฉบับ">บันทึกลง _skins</button>
+  <button class="btn primary" id="saveBtn" title="ดาวน์โหลด PNG ชื่อเดิม ขนาดเดิม">บันทึก PNG</button>
 </header>
+
+<nav class="itembar" aria-label="ชิ้นที่เปิดอยู่">
+  <button class="btn lib" id="libBtn" aria-controls="drawer">คลังชุด <span class="count" id="libBtnCount"></span></button>
+  <button class="btn" id="prevItem" title="ชิ้นก่อนหน้า (Alt+←)" disabled>◀</button>
+  <div class="crumb" id="crumb"><span class="char">ตัวอย่าง</span><strong>กล่อง UV</strong><span class="raw">เลือกโฟลเดอร์ 3D_Export เพื่อเปิดชุดจากเกม</span></div>
+  <span class="pos" id="itemPos"></span>
+  <button class="btn" id="nextItem" title="ชิ้นถัดไป (Alt+→)" disabled>▶</button>
+</nav>
 
 <main>
   <aside>
@@ -159,6 +212,35 @@ select{font:inherit;font-size:13px;border:1px solid var(--line);background:var(-
 </main>
 
 <div class="drop" id="drop" hidden>วางไฟล์ .obj และ .png ที่นี่</div>
+
+<div class="scrim" id="scrim" hidden></div>
+<section class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" hidden>
+  <div class="drawer-head"><h2 id="drawerTitle">คลังชุด</h2><button class="btn" id="drawerClose">ปิด</button></div>
+  <div class="drawer-body">
+    <div class="lib-empty" id="libEmpty">
+      <p>เลือกโฟลเดอร์ <code>3D_Export</code> บนเครื่อง เว็บจะจับคู่ไฟล์ <code>.obj</code> กับ <code>_texture.png</code> ในแต่ละโฟลเดอร์ให้ แล้วแสดงเป็นรายการให้กดเปิดได้ทันที</p>
+      <div class="chips"><button class="btn primary" id="pickFolder">เลือกโฟลเดอร์ 3D_Export</button><button class="btn" id="reopenFolder" hidden>เปิดโฟลเดอร์เดิม</button></div>
+      <input type="file" id="dirInput" webkitdirectory directory multiple hidden>
+      <p class="lib-note">ไฟล์ถูกอ่านในเบราว์เซอร์บนเครื่องคุณเท่านั้น ไม่มีการอัปโหลด ใน Chrome/Edge เว็บจะจำโฟลเดอร์ไว้และบันทึกงานลงโฟลเดอร์ <code>_skins</code> ได้</p>
+    </div>
+    <div id="libBody" hidden style="display:flex;flex-direction:column;gap:12px">
+      <div class="lib-src">โฟลเดอร์ <strong id="libRoot"></strong><span id="libCount"></span><button class="btn" id="libChange">เปลี่ยนโฟลเดอร์</button></div>
+      <input class="search" type="search" id="libSearch" placeholder="ค้นหาชื่อชิ้น เช่น helmet, legend" autocomplete="off">
+      <div class="group"><span class="label">ตัวละคร</span><div class="chips" id="charChips"></div></div>
+      <div class="group"><span class="label">ประเภท (เดาจากชื่อไฟล์)</span><div class="chips" id="typeChips"></div></div>
+      <div class="chips">
+        <label class="check"><input type="checkbox" id="onlyPng" checked> เฉพาะชิ้นที่มีไฟล์ PNG</label>
+        <label class="check"><input type="checkbox" id="onlyEdited"> เฉพาะที่แก้แล้ว</label>
+      </div>
+      <div class="group" id="recentWrap" hidden><span class="label">เปิดล่าสุด</span><div class="recent-items" id="recentItems"></div></div>
+      <p class="lib-note" id="libShown"></p>
+      <div class="grid" id="libGrid"></div>
+    </div>
+  </div>
+</section>
+
+<div class="scrim" id="dlgScrim" hidden></div>
+<div class="dialog" id="dlg" role="alertdialog" aria-modal="true" aria-labelledby="dlgText" hidden><p id="dlgText"></p><div class="acts" id="dlgActs"></div></div>
 <div class="toast" id="toast" hidden></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -178,10 +260,11 @@ function sizeAll(w,h){ W=w; H=h; for (const c of [tex,orig,base,mask,layer]) { c
 
 let undo = [], redo = [];
 function snapshot(){ return tctx.getImageData(0,0,W,H); }
-function pushUndo(){ undo.push(snapshot()); if (undo.length>40) undo.shift(); redo.length=0; updUndo(); }
+let dirty=false;
+function pushUndo(){ undo.push(snapshot()); if (undo.length>40) undo.shift(); redo.length=0; dirty=true; updUndo(); }
 function updUndo(){ $('undoBtn').disabled=!undo.length; $('redoBtn').disabled=!redo.length; }
-function doUndo(){ if(!undo.length) return; cancelAdjust(); lastRecolor=null; redo.push(snapshot()); tctx.putImageData(undo.pop(),0,0); changed(); updUndo(); }
-function doRedo(){ if(!redo.length) return; cancelAdjust(); lastRecolor=null; undo.push(snapshot()); tctx.putImageData(redo.pop(),0,0); changed(); updUndo(); }
+function doUndo(){ if(!undo.length) return; cancelAdjust(); lastRecolor=null; redo.push(snapshot()); tctx.putImageData(undo.pop(),0,0); dirty=true; changed(); updUndo(); }
+function doRedo(){ if(!redo.length) return; cancelAdjust(); lastRecolor=null; undo.push(snapshot()); tctx.putImageData(redo.pop(),0,0); dirty=true; changed(); updUndo(); }
 
 /* ---------- three.js scene ---------- */
 const c3d = $('c3d');
@@ -243,11 +326,11 @@ function setModel(text){
 }
 
 /* ---------- texture loading ---------- */
-function setTextureFromImage(img,name){
+function setTextureFromImage(img,name,origImg){
   sizeAll(img.naturalWidth,img.naturalHeight);
-  octx.clearRect(0,0,W,H); octx.drawImage(img,0,0);
+  octx.clearRect(0,0,W,H); octx.drawImage(origImg||img,0,0,W,H);
   tctx.clearRect(0,0,W,H); tctx.drawImage(img,0,0);
-  pngName=name; userView=false; undo=[]; redo=[]; updUndo(); lastRecolor=null; cancelAdjust();
+  pngName=name; userView=false; dirty=false; undo=[]; redo=[]; updUndo(); lastRecolor=null; cancelAdjust();
   ctex.image=tex; ctex.needsUpdate=true; fit2d(); changed();
 }
 function loadImage(src){ return new Promise((res,rej)=>{const i=new Image(); i.onload=()=>res(i); i.onerror=()=>rej(new Error('เปิดภาพไม่ได้')); i.src=src;}); }
@@ -255,6 +338,7 @@ function loadImage(src){ return new Promise((res,rej)=>{const i=new Image(); i.o
 let objName='sample_box.obj';
 async function handleFiles(list){
   const files=[...list]; let msg=[];
+  if(dirty && !(await lib.confirmLeave())) return;
   const objF=files.find(f=>/\.obj$/i.test(f.name)), imgF=files.find(f=>/\.(png|jpe?g)$/i.test(f.name));
   if(!objF && !imgF){ toast('รองรับเฉพาะไฟล์ .obj และ .png'); return; }
   try{
@@ -262,6 +346,7 @@ async function handleFiles(list){
     if(imgF){ const url=URL.createObjectURL(imgF); const img=await loadImage(url); URL.revokeObjectURL(url);
       setTextureFromImage(img, imgF.name.replace(/\.(jpe?g)$/i,'.png')); msg.push(`${imgF.name} (${W}×${H})`); }
     $('fileinfo').textContent = `${objName} + ${pngName}`;
+    lib.setCurrent(null, `${objName} + ${pngName}`);
     toast('โหลดแล้ว: '+msg.join(', '));
     if(objF && !imgF) toast('โหลดโมเดลแล้ว — เปิดไฟล์ .png ที่คู่กันด้วย');
   }catch(e){ toast(e.message||'เปิดไฟล์ไม่ได้'); }
@@ -386,7 +471,7 @@ function resetAdjSliders(){ $('adjH').value=0; $('adjS').value=100; $('adjV').va
 function cancelAdjust(){ if(!adjSnap) return; tctx.putImageData(adjSnap,0,0); adjSnap=null; $('adjApply').disabled=true; $('adjCancel').disabled=true; resetAdjSliders(); changed(); }
 ['adjH','adjS','adjV'].forEach(id=>$(id).addEventListener('input',e=>{ if(e.isTrusted) previewAdjust(); }));
 $('adjCancel').onclick=cancelAdjust;
-$('adjApply').onclick=()=>{ if(!adjSnap) return; undo.push(adjSnap); if(undo.length>40) undo.shift(); redo.length=0; updUndo(); adjSnap=null;
+$('adjApply').onclick=()=>{ if(!adjSnap) return; dirty=true; undo.push(adjSnap); if(undo.length>40) undo.shift(); redo.length=0; updUndo(); adjSnap=null;
   $('adjApply').disabled=true; $('adjCancel').disabled=true; resetAdjSliders(); toast('ปรับสีทั้งภาพแล้ว'); };
 
 let resetArmed=0;
@@ -511,16 +596,22 @@ function loop(){
 
 /* ---------- save ---------- */
 let downloads=null;
-$('saveBtn').onclick=async()=>{
+const texBlob=()=>new Promise(r=>tex.toBlob(r,'image/png'));
+$('saveBtn').onclick=()=>saveDownload();
+$('saveFolderBtn').onclick=()=>lib.saveToFolder();
+async function saveDownload(){
   cancelAdjust();
-  const blob=await new Promise(r=>tex.toBlob(r,'image/png'));
-  if(!downloads){ const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=pngName; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),4000); toast('บันทึก '+pngName+' แล้ว'); return; }
-  try{ await downloads.save({filename:pngName, data:blob}); toast('บันทึก '+pngName+' แล้ว'); }
-  catch(err){ if(err&&err.code==='declined') toast('ยกเลิกการบันทึก'); else if(err&&err.code==='rate_limited') toast('มีหน้าต่างบันทึกเปิดอยู่ ลองใหม่อีกครั้ง'); else toast('บันทึกไม่สำเร็จ'); }
-};
+  const blob=await texBlob();
+  if(!downloads){ const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=pngName; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),4000); toast('บันทึก '+pngName+' แล้ว'); dirty=false; return true; }
+  try{ await downloads.save({filename:pngName, data:blob}); toast('บันทึก '+pngName+' แล้ว'); dirty=false; return true; }
+  catch(err){ if(err&&err.code==='declined') toast('ยกเลิกการบันทึก'); else if(err&&err.code==='rate_limited') toast('มีหน้าต่างบันทึกเปิดอยู่ ลองใหม่อีกครั้ง'); else toast('บันทึกไม่สำเร็จ'); return false; }
+}
 
 /* ---------- keys ---------- */
 addEventListener('keydown',e=>{
+  if(e.key==='Escape'){ if(!$('dlg').hidden) return; if(!$('drawer').hidden){ lib.close(); return; } }
+  if(e.altKey && (e.key==='ArrowLeft'||e.key==='ArrowRight')){ e.preventDefault(); lib.step(e.key==='ArrowRight'?1:-1); return; }
+  if(!$('drawer').hidden) return;
   if(e.target.matches('input,select')) return;
   const k=e.key.toLowerCase();
   if((e.ctrlKey||e.metaKey)&&k==='z'){ e.preventDefault(); e.shiftKey?doRedo():doUndo(); return; }
@@ -533,6 +624,256 @@ $('undoBtn').onclick=doUndo; $('redoBtn').onclick=doRedo;
 
 /* ---------- toast ---------- */
 let tt; function toast(m){ const t=$('toast'); t.textContent=m; t.hidden=false; clearTimeout(tt); tt=setTimeout(()=>t.hidden=true,2600); }
+
+
+/* ---------- library: browse the 3D_Export folder ---------- */
+const lib = (() => {
+  const S = { root:null, rootName:'', items:[], byId:new Map(), edited:new Map(), current:null,
+    char:'all', type:'all', q:'', onlyPng:true, onlyEdited:false, filtered:[], urls:new Map() };
+  const LS = { get(k,d){ try{ const v=localStorage.getItem(k); return v?JSON.parse(v):d; }catch(e){ return d; } },
+               set(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} } };
+  const canPick = 'showDirectoryPicker' in window;
+
+  // IndexedDB keeps the folder handle so Chrome/Edge can reopen it next visit
+  function idb(){ return new Promise((res,rej)=>{ const r=indexedDB.open('skin-painter',1); r.onupgradeneeded=()=>r.result.createObjectStore('kv'); r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); }); }
+  async function idbGet(k){ try{ const db=await idb(); return await new Promise(res=>{ const q=db.transaction('kv').objectStore('kv').get(k); q.onsuccess=()=>res(q.result); q.onerror=()=>res(null); }); }catch(e){ return null; } }
+  async function idbSet(k,v){ try{ const db=await idb(); db.transaction('kv','readwrite').objectStore('kv').put(v,k); }catch(e){} }
+
+  const TYPE_RULES = [
+    ['head', /(hat|helmet|hood|crown|mask|hair|horn|antenna|head|band|cap|glasses|earmuff|halo|headphone|nose|bandana|ear|afro|bow|tiara|wig)/i],
+    ['hand', /(knife|dagger|claw|weapon|sword|fan|shuriken|zapper|lollipop|lantern|flag|whistle|magazine|talisman|trinket|radio|lamp|staff|wand|bat$|spear|axe|hammer|bow\b|gun|shield|book|umbrella)/i],
+    ['back', /(wing|tail|cape|back|bag)/i],
+  ];
+  const TYPE_LABEL = { all:'ทั้งหมด', body:'ชุด / ตัว', head:'หัว', hand:'ของถือ', back:'หลัง / ปีก' };
+  function typeOf(name){ for(const [t,re] of TYPE_RULES) if(re.test(name)) return t; return 'body'; }
+  function pretty(item){
+    let n=item.folder.startsWith(item.char+'_') ? item.folder.slice(item.char.length+1) : item.folder;
+    if(n==='_ตัวเปล่า'||n==='ตัวเปล่า') return 'ตัวเปล่า';
+    n=n.replace(/_/g,' ').replace(/([a-z0-9])([A-Z])/g,'$1 $2').trim();
+    return n.charAt(0).toUpperCase()+n.slice(1);
+  }
+  const getFile = ref => ref instanceof File ? Promise.resolve(ref) : ref.getFile();
+
+  // ---- scanning ----
+  function build(entries){ // entries: [{path:[dirs...], name, ref}]
+    const dirs=new Map();
+    for(const e of entries){ const key=e.path.join('/'); if(!dirs.has(key)) dirs.set(key,{path:e.path,files:[]}); dirs.get(key).files.push(e); }
+    const items=[], edited=new Map();
+    for(const {path,files} of dirs.values()){
+      if(path[0]==='_skins'){ const png=files.find(f=>/\.png$/i.test(f.name)); if(png) edited.set(path.slice(1).join('/'), png.ref); continue; }
+      const objs=files.filter(f=>/\.obj$/i.test(f.name)); if(!objs.length) continue;
+      const pngs=files.filter(f=>/\.png$/i.test(f.name));
+      for(const o of objs){
+        const base=o.name.replace(/\.obj$/i,'');
+        const png = pngs.find(f=>f.name.toLowerCase()===(base+'_texture.png').toLowerCase())
+                 || pngs.find(f=>f.name.toLowerCase().startsWith(base.toLowerCase()))
+                 || (objs.length===1 ? pngs[0] : null) || null;
+        const folder=path[path.length-1]||base;
+        const it={ id: path.join('/')+(objs.length>1?'#'+base:''), dir:path, char: path.length>=2?path[path.length-2]:'(ราก)', folder: objs.length>1?base:folder,
+          base, obj:o.ref, objName:o.name, png:png?png.ref:null, pngName: png?png.name:base+'_texture.png' };
+        it.label=pretty(it); it.type=typeOf(it.folder); items.push(it);
+      }
+    }
+    items.sort((a,b)=> a.char.localeCompare(b.char) || (a.label==='ตัวเปล่า'?-1:b.label==='ตัวเปล่า'?1:a.label.localeCompare(b.label)));
+    return {items, edited};
+  }
+  async function walk(dir, path, out, depth){
+    if(depth>6) return;
+    for await (const [name,h] of dir.entries()){
+      if(name.startsWith('.')) continue;
+      if(h.kind==='directory') await walk(h,[...path,name],out,depth+1);
+      else if(/\.(obj|png)$/i.test(name)) out.push({path, name, ref:h});
+    }
+  }
+  function load(items, edited, rootName){
+    for(const u of S.urls.values()) URL.revokeObjectURL(u); S.urls.clear();
+    S.items=items; S.edited=edited; S.rootName=rootName; S.byId=new Map(items.map(i=>[i.id,i]));
+    S.char = LS.get('sp-char','all'); if(S.char!=='all' && !items.some(i=>i.char===S.char)) S.char='all';
+    $('libEmpty').hidden=true; $('libBody').hidden=false;
+    $('libRoot').textContent=rootName; $('libCount').textContent=` · ${items.length} ชิ้น · มี PNG ${items.filter(i=>i.png).length}`;
+    $('libBtnCount').textContent=items.length; $('saveFolderBtn').hidden=!S.root;
+    render();
+    if(!items.length) toast('ไม่พบไฟล์ .obj ในโฟลเดอร์นี้ — ลองเลือกโฟลเดอร์ 3D_Export ที่มีโฟลเดอร์ตัวละครอยู่ข้างใน');
+    else toast(`พบ ${items.length} ชิ้นใน ${new Set(items.map(i=>i.char)).size} ตัวละคร`);
+  }
+  async function scanHandle(handle){
+    toast('กำลังอ่านโฟลเดอร์…');
+    const out=[]; await walk(handle,[],out,0);
+    S.root=handle; const {items,edited}=build(out); load(items,edited,handle.name);
+    const last=LS.get('sp-last',null); if(last && S.byId.has(last) && !S.current) open(S.byId.get(last),{quiet:true});
+  }
+  async function pick(){
+    if(canPick){
+      try{ const h=await window.showDirectoryPicker({id:'skin-painter-3d', mode:'read'}); await idbSet('root',h); await scanHandle(h); return; }
+      catch(e){ if(e && e.name==='AbortError') return; /* fall through to the input picker */ }
+    }
+    $('dirInput').click();
+  }
+  $('dirInput').onchange=e=>{
+    const files=[...e.target.files]; e.target.value=''; if(!files.length) return;
+    const out=[]; let rootName='';
+    for(const f of files){ if(!/\.(obj|png)$/i.test(f.name)) continue; const parts=(f.webkitRelativePath||f.name).split('/'); rootName=rootName||parts[0];
+      out.push({path:parts.slice(1,-1), name:f.name, ref:f}); }
+    S.root=null; const {items,edited}=build(out); load(items,edited,rootName||'โฟลเดอร์');
+    const last=LS.get('sp-last',null); if(last && S.byId.has(last) && !S.current) open(S.byId.get(last),{quiet:true});
+  };
+  async function reopen(){
+    const h=await idbGet('root'); if(!h){ pick(); return; }
+    try{ const p=await h.requestPermission({mode:'read'}); if(p!=='granted'){ toast('ไม่ได้รับสิทธิ์อ่านโฟลเดอร์ — เลือกใหม่อีกครั้ง'); return; } await scanHandle(h); }
+    catch(e){ toast('เปิดโฟลเดอร์เดิมไม่ได้ — เลือกใหม่อีกครั้ง'); $('reopenFolder').hidden=true; }
+  }
+
+  // ---- rendering ----
+  function matches(i){
+    if(S.char!=='all' && i.char!==S.char) return false;
+    if(S.type!=='all' && i.type!==S.type) return false;
+    if(S.onlyPng && !i.png) return false;
+    if(S.onlyEdited && !S.edited.has(i.dir.join('/'))) return false;
+    if(S.q){ const q=S.q.toLowerCase(); if(!(i.folder.toLowerCase().includes(q)||i.label.toLowerCase().includes(q)||i.char.toLowerCase().includes(q))) return false; }
+    return true;
+  }
+  function chip(label,n,pressed,onclick){ const b=document.createElement('button'); b.className='chip'; b.setAttribute('aria-pressed',pressed);
+    b.append(label); if(n!=null){ const s=document.createElement('span'); s.className='n'; s.textContent=n; b.append(s); } b.onclick=onclick; return b; }
+  function render(){
+    const base=S.items.filter(i=>(!S.onlyPng||i.png));
+    const cc=$('charChips'); cc.innerHTML='';
+    cc.append(chip('ทั้งหมด',base.length,S.char==='all',()=>{S.char='all'; LS.set('sp-char','all'); render();}));
+    for(const c of [...new Set(S.items.map(i=>i.char))]){ const n=base.filter(i=>i.char===c).length; if(!n && S.char!==c) continue;
+      cc.append(chip(c,n,S.char===c,()=>{S.char=c; LS.set('sp-char',c); render();})); }
+    const inChar=base.filter(i=>S.char==='all'||i.char===S.char);
+    const tc=$('typeChips'); tc.innerHTML='';
+    for(const t of ['all','body','head','hand','back']){ const n=t==='all'?inChar.length:inChar.filter(i=>i.type===t).length; if(!n && t!=='all') continue;
+      tc.append(chip(TYPE_LABEL[t],n,S.type===t,()=>{S.type=t; render();})); }
+    S.filtered=S.items.filter(matches);
+    $('libShown').textContent = S.filtered.length ? `แสดง ${S.filtered.length} ชิ้น` : 'ไม่พบชิ้นที่ตรงกับตัวกรอง';
+    const g=$('libGrid'); g.innerHTML='';
+    const frag=document.createDocumentFragment();
+    for(const it of S.filtered) frag.append(card(it));
+    g.append(frag); renderRecent(); updateBar();
+  }
+  const io = new IntersectionObserver(es=>{ for(const e of es){ if(!e.isIntersecting) continue; const img=e.target; io.unobserve(img); thumb(img); } },{root:null,rootMargin:'200px'});
+  async function thumb(img){
+    const it=S.byId.get(img.dataset.id); if(!it) return;
+    const ref=S.edited.get(it.dir.join('/'))||it.png; if(!ref) return;
+    const key=it.id+(S.edited.has(it.dir.join('/'))?'#e':'');
+    try{ if(!S.urls.has(key)) S.urls.set(key, URL.createObjectURL(await getFile(ref))); img.src=S.urls.get(key); }catch(e){}
+  }
+  function card(it){
+    const b=document.createElement('button'); b.className='card'; b.dataset.id=it.id; b.title=`${it.char}/${it.folder}`;
+    if(S.current===it) b.setAttribute('aria-current','true');
+    const th=document.createElement('span'); th.className='thumb';
+    if(it.png){ const img=document.createElement('img'); img.alt=''; img.dataset.id=it.id; img.decoding='async'; th.append(img); io.observe(img); }
+    else { const s=document.createElement('span'); s.className='none'; s.textContent='ไม่มีไฟล์ PNG'; th.append(s); }
+    const nm=document.createElement('span'); nm.className='nm'; nm.textContent=it.label;
+    const meta=document.createElement('span'); meta.className='meta'; meta.append(it.char);
+    if(S.edited.has(it.dir.join('/'))){ const e=document.createElement('span'); e.className='badge edited'; e.textContent='แก้แล้ว'; meta.append(e); }
+    b.append(th,nm,meta); b.onclick=()=>open(it); return b;
+  }
+  function renderRecent(){
+    const ids=LS.get('sp-recent',[]).filter(id=>S.byId.has(id)).slice(0,8);
+    $('recentWrap').hidden=!ids.length; const r=$('recentItems'); r.innerHTML='';
+    for(const id of ids){ const it=S.byId.get(id); r.append(chip(`${it.char} · ${it.label}`,null,S.current===it,()=>open(it))); }
+  }
+  function updateBar(){
+    const it=S.current, cr=$('crumb'); cr.innerHTML='';
+    const mk=(cls,txt,tag='span')=>{ const e=document.createElement(tag); if(cls) e.className=cls; e.textContent=txt; cr.append(e); return e; };
+    if(it){ mk('char',it.char); mk('',it.label,'strong'); mk('raw',it.pngName);
+      if(S.edited.has(it.dir.join('/'))) mk('badge edited','แก้แล้ว'); if(!it.png) mk('badge','ไม่มี PNG ในเกม');
+      const list=S.filtered.includes(it)?S.filtered:S.items, i=list.indexOf(it);
+      $('itemPos').textContent=`${i+1} / ${list.length}`; $('prevItem').disabled=i<=0; $('nextItem').disabled=i>=list.length-1;
+    } else {
+      mk('char',S.single?'ไฟล์เดี่ยว':'ตัวอย่าง'); mk('',S.single||'กล่อง UV','strong');
+      if(!S.items.length) mk('raw','เลือกโฟลเดอร์ 3D_Export เพื่อเปิดชุดจากเกม');
+      $('itemPos').textContent=''; $('prevItem').disabled=!S.filtered.length; $('nextItem').disabled=!S.filtered.length;
+    }
+    $('saveFolderBtn').hidden=!(S.root && it);
+    document.querySelectorAll('.card[aria-current]').forEach(c=>c.removeAttribute('aria-current'));
+    if(it){ const c=document.querySelector(`.card[data-id="${CSS.escape(it.id)}"]`); if(c) c.setAttribute('aria-current','true'); }
+  }
+
+  // ---- in-page dialog ----
+  function ask(text, buttons){
+    return new Promise(res=>{
+      $('dlgText').textContent=text; const a=$('dlgActs'); a.innerHTML='';
+      const done=v=>{ $('dlg').hidden=true; $('dlgScrim').hidden=true; removeEventListener('keydown',esc,true); res(v); };
+      const esc=e=>{ if(e.key==='Escape'){ e.stopPropagation(); done('cancel'); } };
+      for(const b of buttons){ const el=document.createElement('button'); el.className='btn'+(b.primary?' primary':''); el.textContent=b.label; el.onclick=()=>done(b.value); a.append(el); }
+      $('dlg').hidden=false; $('dlgScrim').hidden=false; addEventListener('keydown',esc,true); a.lastChild.focus();
+    });
+  }
+  async function confirmLeave(){
+    const opts=[{label:'ยกเลิก',value:'cancel'},{label:'ทิ้งการแก้ไข',value:'discard'}];
+    if(S.root && S.current) opts.push({label:'บันทึกลง _skins แล้วไปต่อ',value:'folder',primary:true});
+    else opts.push({label:'บันทึก PNG แล้วไปต่อ',value:'download',primary:true});
+    const v=await ask('ชิ้นนี้มีการแก้ไขที่ยังไม่ได้บันทึก',opts);
+    if(v==='cancel') return false;
+    if(v==='folder') return await saveToFolder();
+    if(v==='download') return await saveDownload();
+    return true;
+  }
+
+  // ---- opening an item ----
+  function blankTexture(){ const c=document.createElement('canvas'); c.width=c.height=256; const x=c.getContext('2d');
+    x.fillStyle='#d9d5cc'; x.fillRect(0,0,256,256); x.strokeStyle='rgba(0,0,0,.08)'; for(let k=16;k<256;k+=16){ x.beginPath(); x.moveTo(k,0); x.lineTo(k,256); x.moveTo(0,k); x.lineTo(256,k); x.stroke(); } return c.toDataURL('image/png'); }
+  let opening=0;
+  async function open(it,{quiet=false}={}){
+    if(!it) return;
+    if(dirty && !(await confirmLeave())) return;
+    const my=++opening;
+    try{
+      const objText=await (await getFile(it.obj)).text();
+      let origURL=null, editURL=null;
+      if(it.png) origURL=URL.createObjectURL(await getFile(it.png));
+      const eref=S.edited.get(it.dir.join('/')); if(eref) editURL=URL.createObjectURL(await getFile(eref));
+      const origImg=await loadImage(origURL||blankTexture());
+      const workImg=editURL? await loadImage(editURL) : origImg;
+      if(my!==opening) return;
+      setModel(objText); setTextureFromImage(workImg, it.pngName, origImg);
+      if(origURL) URL.revokeObjectURL(origURL); if(editURL) URL.revokeObjectURL(editURL);
+      objName=it.objName; $('fileinfo').textContent=`${it.dir.join('/')}/${it.objName} + ${it.pngName}`;
+      S.current=it; LS.set('sp-last',it.id); LS.set('sp-recent',[it.id,...LS.get('sp-recent',[]).filter(x=>x!==it.id)].slice(0,12));
+      renderRecent(); updateBar();
+      if(!$('drawer').hidden) close();
+      if(!quiet) toast(editURL?`${it.label}: เปิดเวอร์ชันที่แก้ไว้ใน _skins (คืนต้นฉบับยังใช้ภาพเกมเดิม)`: !it.png?`${it.label}: ในเกมไม่มีไฟล์ภาพแยก — ใช้พื้นสีเทาให้ระบายแทน`:`เปิด ${it.char} · ${it.label}`);
+    }catch(e){ toast('เปิดชิ้นนี้ไม่ได้: '+(e.message||e)); }
+  }
+  function step(d){
+    const list=S.current && S.filtered.includes(S.current)?S.filtered:(S.current?S.items:S.filtered); if(!list.length) return;
+    const i=S.current?list.indexOf(S.current):-1; const n=Math.min(list.length-1,Math.max(0,i+d)); if(n!==i) open(list[n],{quiet:true});
+  }
+
+  // ---- saving into <root>/_skins/<same path>/ ----
+  async function saveToFolder(){
+    const it=S.current; if(!S.root||!it){ toast('ต้องเปิดชิ้นจากคลังชุดใน Chrome/Edge ก่อน'); return false; }
+    cancelAdjust();
+    try{
+      if(await S.root.requestPermission({mode:'readwrite'})!=='granted'){ toast('ไม่ได้รับสิทธิ์เขียนโฟลเดอร์ — ใช้ "บันทึก PNG" แทน'); return false; }
+      let d=await S.root.getDirectoryHandle('_skins',{create:true});
+      for(const p of it.dir) d=await d.getDirectoryHandle(p,{create:true});
+      const fh=await d.getFileHandle(it.pngName,{create:true}); const w=await fh.createWritable(); await w.write(await texBlob()); await w.close();
+      S.edited.set(it.dir.join('/'), fh); for(const k of [...S.urls.keys()]) if(k.startsWith(it.id)){ URL.revokeObjectURL(S.urls.get(k)); S.urls.delete(k); }
+      dirty=false; render(); toast(`บันทึกแล้ว: _skins/${it.dir.join('/')}/${it.pngName}`); return true;
+    }catch(e){ toast('บันทึกลงโฟลเดอร์ไม่ได้: '+(e.message||e)); return false; }
+  }
+
+  // ---- drawer ----
+  let lastFocus=null;
+  function openDrawer(){ lastFocus=document.activeElement; $('drawer').hidden=false; $('scrim').hidden=false;
+    (S.items.length?$('libSearch'):$('pickFolder')).focus();
+    const c=document.querySelector('.card[aria-current="true"]'); if(c) c.scrollIntoView({block:'center'}); }
+  function close(){ $('drawer').hidden=true; $('scrim').hidden=true; if(lastFocus&&lastFocus.focus) lastFocus.focus(); }
+  $('libBtn').onclick=openDrawer; $('drawerClose').onclick=close; $('scrim').onclick=close;
+  $('pickFolder').onclick=pick; $('libChange').onclick=pick; $('reopenFolder').onclick=reopen;
+  $('prevItem').onclick=()=>step(-1); $('nextItem').onclick=()=>step(1);
+  let qt; $('libSearch').addEventListener('input',e=>{ clearTimeout(qt); qt=setTimeout(()=>{ S.q=e.target.value.trim(); render(); },120); });
+  $('onlyPng').onchange=e=>{ S.onlyPng=e.target.checked; render(); };
+  $('onlyEdited').onchange=e=>{ S.onlyEdited=e.target.checked; render(); };
+  addEventListener('beforeunload',e=>{ if(dirty){ e.preventDefault(); e.returnValue=''; } });
+  (async()=>{ if(canPick){ const h=await idbGet('root'); if(h){ $('reopenFolder').hidden=false; $('reopenFolder').textContent=`เปิดโฟลเดอร์เดิม (${h.name})`; } } })();
+
+  return { open, step, close, confirmLeave, saveToFolder,
+    setCurrent(it,single){ S.current=it; S.single=single||''; updateBar(); } };
+})();
 
 /* ---------- built-in sample: a box with a 3×2 UV atlas ---------- */
 const CELLS=['หน้า','หลัง','ขวา','ซ้าย','บน','ล่าง'];
