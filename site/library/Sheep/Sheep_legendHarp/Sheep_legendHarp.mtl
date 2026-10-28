@@ -1,0 +1,3 @@
+newmtl Sheep_legendHarp
+Kd 1 1 1
+map_Kd Sheep_legendHarp_texture.png

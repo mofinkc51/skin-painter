@@ -1,0 +1,3 @@
+newmtl Bat_paperWand
+Kd 1 1 1
+map_Kd Bat_paperWand_texture.png

@@ -1,0 +1,3 @@
+newmtl Cat_pvpHelmet
+Kd 1 1 1
+map_Kd Cat_pvpHelmet_texture.png

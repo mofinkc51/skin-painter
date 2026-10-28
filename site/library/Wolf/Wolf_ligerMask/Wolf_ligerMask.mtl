@@ -1,0 +1,3 @@
+newmtl Wolf_ligerMask
+Kd 1 1 1
+map_Kd Wolf_ligerMask_texture.png

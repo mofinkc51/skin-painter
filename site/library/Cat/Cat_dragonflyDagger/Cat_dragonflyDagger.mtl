@@ -1,0 +1,3 @@
+newmtl Cat_dragonflyDagger
+Kd 1 1 1
+map_Kd Cat_dragonflyDagger_texture.png

@@ -1,0 +1,3 @@
+newmtl Chameleon_mantisMask
+Kd 1 1 1
+map_Kd Chameleon_mantisMask_texture.png

@@ -1,0 +1,3 @@
+newmtl Bat_hallow
+Kd 1 1 1
+map_Kd Bat_hallow_texture.png

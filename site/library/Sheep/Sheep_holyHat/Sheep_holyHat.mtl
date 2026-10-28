@@ -1,0 +1,3 @@
+newmtl Sheep_holyHat
+Kd 1 1 1
+map_Kd Sheep_holyHat_texture.png

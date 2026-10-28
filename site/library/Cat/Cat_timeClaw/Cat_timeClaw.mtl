@@ -1,0 +1,3 @@
+newmtl Cat_timeClaw
+Kd 1 1 1
+map_Kd Cat_timeClaw_texture.png

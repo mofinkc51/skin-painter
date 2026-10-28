@@ -1,0 +1,3 @@
+newmtl Monkey_frozenWings
+Kd 1 1 1
+map_Kd Monkey_frozenWings_texture.png

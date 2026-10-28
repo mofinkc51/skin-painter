@@ -1,0 +1,3 @@
+newmtl Cat_bugZapper
+Kd 1 1 1
+map_Kd Cat_bugZapper_texture.png

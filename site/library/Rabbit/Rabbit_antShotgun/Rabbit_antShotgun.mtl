@@ -1,0 +1,3 @@
+newmtl Rabbit_antShotgun
+Kd 1 1 1
+map_Kd Rabbit_antShotgun_texture.png

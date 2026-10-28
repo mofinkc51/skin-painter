@@ -1,0 +1,3 @@
+newmtl Sheep_clericHat
+Kd 1 1 1
+map_Kd Sheep_clericHat_texture.png

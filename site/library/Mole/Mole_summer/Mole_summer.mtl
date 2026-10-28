@@ -1,0 +1,3 @@
+newmtl Mole_summer
+Kd 1 1 1
+map_Kd Mole_summer_texture.png

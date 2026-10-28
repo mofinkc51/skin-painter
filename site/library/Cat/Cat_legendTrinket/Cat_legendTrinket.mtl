@@ -1,0 +1,3 @@
+newmtl Cat_legendTrinket
+Kd 1 1 1
+map_Kd Cat_legendTrinket_texture.png

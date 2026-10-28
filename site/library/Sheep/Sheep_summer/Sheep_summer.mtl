@@ -1,0 +1,3 @@
+newmtl Sheep_summer
+Kd 1 1 1
+map_Kd Sheep_summer_texture.png

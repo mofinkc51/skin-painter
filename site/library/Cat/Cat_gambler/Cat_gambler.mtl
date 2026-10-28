@@ -1,0 +1,3 @@
+newmtl Cat_gambler
+Kd 1 1 1
+map_Kd Cat_gambler_texture.png

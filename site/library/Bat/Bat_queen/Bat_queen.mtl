@@ -1,0 +1,3 @@
+newmtl Bat_queen
+Kd 1 1 1
+map_Kd Bat_queen_texture.png

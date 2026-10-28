@@ -1,0 +1,3 @@
+newmtl Monkey_sleepHat
+Kd 1 1 1
+map_Kd Monkey_sleepHat_texture.png

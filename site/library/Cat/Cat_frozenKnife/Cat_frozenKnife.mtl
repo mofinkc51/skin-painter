@@ -1,0 +1,3 @@
+newmtl Cat_frozenKnife
+Kd 1 1 1
+map_Kd Cat_frozenKnife_texture.png

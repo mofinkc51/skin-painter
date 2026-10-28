@@ -1,0 +1,3 @@
+newmtl Bat_showerCap
+Kd 1 1 1
+map_Kd Bat_showerCap_texture.png

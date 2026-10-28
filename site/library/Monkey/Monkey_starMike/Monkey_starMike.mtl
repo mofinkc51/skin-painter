@@ -1,0 +1,3 @@
+newmtl Monkey_starMike
+Kd 1 1 1
+map_Kd Monkey_starMike_texture.png

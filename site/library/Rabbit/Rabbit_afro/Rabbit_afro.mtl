@@ -1,0 +1,3 @@
+newmtl Rabbit_afro
+Kd 1 1 1
+map_Kd Rabbit_afro_texture.png

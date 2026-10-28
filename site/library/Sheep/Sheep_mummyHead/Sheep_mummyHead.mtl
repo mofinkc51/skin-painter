@@ -1,0 +1,3 @@
+newmtl Sheep_mummyHead
+Kd 1 1 1
+map_Kd Sheep_mummyHead_texture.png

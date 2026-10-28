@@ -1,0 +1,3 @@
+newmtl Cat_pirateKnife
+Kd 1 1 1
+map_Kd Cat_pirateKnife_texture.png

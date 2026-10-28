@@ -1,0 +1,3 @@
+newmtl Cat_legend
+Kd 1 1 1
+map_Kd Cat_legend_texture.png

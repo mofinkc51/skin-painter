@@ -1,0 +1,3 @@
+newmtl Cat_pirate
+Kd 1 1 1
+map_Kd Cat_pirate_texture.png

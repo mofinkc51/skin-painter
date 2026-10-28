@@ -1,0 +1,3 @@
+newmtl Cat_moroccoLamp
+Kd 1 1 1
+map_Kd Cat_moroccoLamp_texture.png

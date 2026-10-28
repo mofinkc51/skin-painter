@@ -1,0 +1,3 @@
+newmtl Monkey_geomancer
+Kd 1 1 1
+map_Kd Monkey_geomancer_texture.png

@@ -1,0 +1,3 @@
+newmtl Cat_headphoneM
+Kd 1 1 1
+map_Kd Cat_headphoneM_texture.png

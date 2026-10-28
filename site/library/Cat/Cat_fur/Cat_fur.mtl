@@ -1,0 +1,3 @@
+newmtl Cat_fur
+Kd 1 1 1
+map_Kd Cat_fur_texture.png

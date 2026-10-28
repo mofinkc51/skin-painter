@@ -1,0 +1,3 @@
+newmtl Sheep_standardBook
+Kd 1 1 1
+map_Kd Sheep_standardBook_texture.png

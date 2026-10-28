@@ -1,0 +1,3 @@
+newmtl Bat_illusionMask
+Kd 1 1 1
+map_Kd Bat_illusionMask_texture.png

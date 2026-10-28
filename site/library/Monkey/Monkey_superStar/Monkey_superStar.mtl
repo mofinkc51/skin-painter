@@ -1,0 +1,3 @@
+newmtl Monkey_superStar
+Kd 1 1 1
+map_Kd Monkey_superStar_texture.png

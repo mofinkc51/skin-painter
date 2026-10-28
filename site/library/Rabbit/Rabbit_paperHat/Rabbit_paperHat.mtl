@@ -1,0 +1,3 @@
+newmtl Rabbit_paperHat
+Kd 1 1 1
+map_Kd Rabbit_paperHat_texture.png

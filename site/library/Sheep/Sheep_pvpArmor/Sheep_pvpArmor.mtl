@@ -1,0 +1,3 @@
+newmtl Sheep_pvpArmor
+Kd 1 1 1
+map_Kd Sheep_pvpArmor_texture.png

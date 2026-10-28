@@ -1,0 +1,3 @@
+newmtl Sheep_bugAntenna
+Kd 1 1 1
+map_Kd Sheep_bugAntenna_texture.png

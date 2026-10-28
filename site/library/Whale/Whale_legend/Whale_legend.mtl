@@ -1,0 +1,3 @@
+newmtl Whale_legend
+Kd 1 1 1
+map_Kd Whale_legend_texture.png

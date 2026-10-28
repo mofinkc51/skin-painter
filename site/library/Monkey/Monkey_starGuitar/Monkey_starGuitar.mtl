@@ -1,0 +1,3 @@
+newmtl Monkey_starGuitar
+Kd 1 1 1
+map_Kd Monkey_starGuitar_texture.png

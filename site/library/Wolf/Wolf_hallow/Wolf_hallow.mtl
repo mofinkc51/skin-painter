@@ -1,0 +1,3 @@
+newmtl Wolf_hallow
+Kd 1 1 1
+map_Kd Wolf_hallow_texture.png

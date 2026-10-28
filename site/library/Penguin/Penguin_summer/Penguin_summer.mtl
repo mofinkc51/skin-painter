@@ -1,0 +1,3 @@
+newmtl Penguin_summer
+Kd 1 1 1
+map_Kd Penguin_summer_texture.png

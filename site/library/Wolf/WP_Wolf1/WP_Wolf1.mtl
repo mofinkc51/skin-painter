@@ -1,0 +1,3 @@
+newmtl WP_Wolf1
+Kd 1 1 1
+map_Kd WP_Wolf1_texture.png

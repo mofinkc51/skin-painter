@@ -1,0 +1,3 @@
+newmtl Wolf_dragonHead
+Kd 1 1 1
+map_Kd Wolf_dragonHead_texture.png

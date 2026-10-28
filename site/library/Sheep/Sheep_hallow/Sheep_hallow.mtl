@@ -1,0 +1,3 @@
+newmtl Sheep_hallow
+Kd 1 1 1
+map_Kd Sheep_hallow_texture.png

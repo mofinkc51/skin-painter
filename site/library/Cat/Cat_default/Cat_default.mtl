@@ -1,0 +1,3 @@
+newmtl Cat_default
+Kd 1 1 1
+map_Kd Cat_default_texture.png

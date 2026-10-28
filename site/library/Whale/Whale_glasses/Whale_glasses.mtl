@@ -1,0 +1,3 @@
+newmtl Whale_glasses
+Kd 1 1 1
+map_Kd Whale_glasses_texture.png

@@ -1,0 +1,3 @@
+newmtl Rabbit_trader
+Kd 1 1 1
+map_Kd Rabbit_trader_texture.png

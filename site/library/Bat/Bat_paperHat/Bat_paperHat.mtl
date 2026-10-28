@@ -1,0 +1,3 @@
+newmtl Bat_paperHat
+Kd 1 1 1
+map_Kd Bat_paperHat_texture.png

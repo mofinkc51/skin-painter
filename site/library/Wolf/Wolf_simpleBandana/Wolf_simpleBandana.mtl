@@ -1,0 +1,3 @@
+newmtl Wolf_simpleBandana
+Kd 1 1 1
+map_Kd Wolf_simpleBandana_texture.png

@@ -1,0 +1,3 @@
+newmtl Wolf_pvpSword
+Kd 1 1 1
+map_Kd Wolf_pvpSword_texture.png

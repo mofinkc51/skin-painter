@@ -1,0 +1,3 @@
+newmtl Wolf_blade
+Kd 1 1 1
+map_Kd Wolf_blade_texture.png

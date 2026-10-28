@@ -1,0 +1,3 @@
+newmtl Rabbit_pvpArmor
+Kd 1 1 1
+map_Kd Rabbit_pvpArmor_texture.png

@@ -1,0 +1,3 @@
+newmtl Monkey_bdWeapon
+Kd 1 1 1
+map_Kd Monkey_bdWeapon_texture.png

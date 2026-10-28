@@ -1,0 +1,3 @@
+newmtl Monkey_pajamas
+Kd 1 1 1
+map_Kd Monkey_pajamas_texture.png

@@ -1,0 +1,3 @@
+newmtl Wolf_lightStick
+Kd 1 1 1
+map_Kd Wolf_lightStick_texture.png

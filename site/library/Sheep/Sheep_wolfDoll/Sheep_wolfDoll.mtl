@@ -1,0 +1,3 @@
+newmtl Sheep_wolfDoll
+Kd 1 1 1
+map_Kd Sheep_wolfDoll_texture.png

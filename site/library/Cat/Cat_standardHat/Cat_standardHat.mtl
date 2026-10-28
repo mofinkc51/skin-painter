@@ -1,0 +1,3 @@
+newmtl Cat_standardHat
+Kd 1 1 1
+map_Kd Cat_standardHat_texture.png

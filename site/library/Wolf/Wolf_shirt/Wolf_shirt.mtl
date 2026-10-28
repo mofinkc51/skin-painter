@@ -1,0 +1,3 @@
+newmtl Wolf_shirt
+Kd 1 1 1
+map_Kd Wolf_shirt_texture.png

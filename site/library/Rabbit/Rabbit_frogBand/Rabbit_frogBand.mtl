@@ -1,0 +1,3 @@
+newmtl Rabbit_frogBand
+Kd 1 1 1
+map_Kd Rabbit_frogBand_texture.png

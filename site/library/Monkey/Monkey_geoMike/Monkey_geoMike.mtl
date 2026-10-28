@@ -1,0 +1,3 @@
+newmtl Monkey_geoMike
+Kd 1 1 1
+map_Kd Monkey_geoMike_texture.png

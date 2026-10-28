@@ -1,0 +1,3 @@
+newmtl Rabbit_santa
+Kd 1 1 1
+map_Kd Rabbit_santa_texture.png

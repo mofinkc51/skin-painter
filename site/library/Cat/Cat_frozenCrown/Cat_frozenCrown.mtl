@@ -1,0 +1,3 @@
+newmtl Cat_frozenCrown
+Kd 1 1 1
+map_Kd Cat_frozenCrown_texture.png

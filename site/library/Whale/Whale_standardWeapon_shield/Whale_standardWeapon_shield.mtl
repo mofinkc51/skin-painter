@@ -1,0 +1,3 @@
+newmtl Whale_standardWeapon_shield
+Kd 1 1 1
+map_Kd Whale_standardWeapon_shield_texture.png

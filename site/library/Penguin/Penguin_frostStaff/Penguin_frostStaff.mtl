@@ -1,0 +1,3 @@
+newmtl Penguin_frostStaff
+Kd 1 1 1
+map_Kd Penguin_frostStaff_texture.png

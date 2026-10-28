@@ -1,0 +1,3 @@
+newmtl Rabbit_rainCoat
+Kd 1 1 1
+map_Kd Rabbit_rainCoat_texture.png

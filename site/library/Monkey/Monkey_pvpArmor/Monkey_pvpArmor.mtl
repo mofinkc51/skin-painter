@@ -1,0 +1,3 @@
+newmtl Monkey_pvpArmor
+Kd 1 1 1
+map_Kd Monkey_pvpArmor_texture.png

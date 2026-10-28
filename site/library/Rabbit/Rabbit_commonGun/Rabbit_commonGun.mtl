@@ -1,0 +1,3 @@
+newmtl Rabbit_commonGun
+Kd 1 1 1
+map_Kd Rabbit_commonGun_texture.png

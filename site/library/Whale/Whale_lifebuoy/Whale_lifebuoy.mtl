@@ -1,0 +1,3 @@
+newmtl Whale_lifebuoy
+Kd 1 1 1
+map_Kd Whale_lifebuoy_texture.png

@@ -1,0 +1,3 @@
+newmtl Cat_gamblerKnife
+Kd 1 1 1
+map_Kd Cat_gamblerKnife_texture.png

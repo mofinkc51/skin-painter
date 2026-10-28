@@ -1,0 +1,3 @@
+newmtl Wolf_horn
+Kd 1 1 1
+map_Kd Wolf_horn_texture.png

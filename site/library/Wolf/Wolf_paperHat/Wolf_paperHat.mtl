@@ -1,0 +1,3 @@
+newmtl Wolf_paperHat
+Kd 1 1 1
+map_Kd Wolf_paperHat_texture.png

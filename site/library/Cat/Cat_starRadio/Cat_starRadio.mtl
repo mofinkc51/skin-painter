@@ -1,0 +1,3 @@
+newmtl Cat_starRadio
+Kd 1 1 1
+map_Kd Cat_starRadio_texture.png

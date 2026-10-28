@@ -1,0 +1,3 @@
+newmtl Bat_shadowHat
+Kd 1 1 1
+map_Kd Bat_shadowHat_texture.png

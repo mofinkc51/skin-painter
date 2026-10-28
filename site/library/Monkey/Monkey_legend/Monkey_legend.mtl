@@ -1,0 +1,3 @@
+newmtl Monkey_legend
+Kd 1 1 1
+map_Kd Monkey_legend_texture.png

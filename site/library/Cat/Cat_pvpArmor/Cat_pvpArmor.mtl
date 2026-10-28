@@ -1,0 +1,3 @@
+newmtl Cat_pvpArmor
+Kd 1 1 1
+map_Kd Cat_pvpArmor_texture.png

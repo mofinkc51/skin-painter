@@ -1,0 +1,3 @@
+newmtl Rabbit_merchantGun
+Kd 1 1 1
+map_Kd Rabbit_merchantGun_texture.png

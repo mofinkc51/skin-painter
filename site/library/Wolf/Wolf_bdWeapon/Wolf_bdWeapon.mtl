@@ -1,0 +1,3 @@
+newmtl Wolf_bdWeapon
+Kd 1 1 1
+map_Kd Wolf_bdWeapon_texture.png

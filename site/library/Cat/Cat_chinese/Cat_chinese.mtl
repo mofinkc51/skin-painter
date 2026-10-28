@@ -1,0 +1,3 @@
+newmtl Cat_chinese
+Kd 1 1 1
+map_Kd Cat_chinese_texture.png

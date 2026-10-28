@@ -1,0 +1,3 @@
+newmtl Cat_partyHat
+Kd 1 1 1
+map_Kd Cat_partyHat_texture.png

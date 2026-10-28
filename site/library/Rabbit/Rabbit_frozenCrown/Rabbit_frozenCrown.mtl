@@ -1,0 +1,3 @@
+newmtl Rabbit_frozenCrown
+Kd 1 1 1
+map_Kd Rabbit_frozenCrown_texture.png

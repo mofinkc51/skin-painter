@@ -1,0 +1,3 @@
+newmtl Cat_catBell
+Kd 1 1 1
+map_Kd Cat_catBell_texture.png

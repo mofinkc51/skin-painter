@@ -1,0 +1,3 @@
+newmtl Rabbit_ant
+Kd 1 1 1
+map_Kd Rabbit_ant_texture.png

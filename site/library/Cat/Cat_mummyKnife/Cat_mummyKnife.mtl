@@ -1,0 +1,3 @@
+newmtl Cat_mummyKnife
+Kd 1 1 1
+map_Kd Cat_mummyKnife_texture.png

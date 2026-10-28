@@ -1,0 +1,3 @@
+newmtl Panda_starGuitar
+Kd 1 1 1
+map_Kd Panda_starGuitar_texture.png

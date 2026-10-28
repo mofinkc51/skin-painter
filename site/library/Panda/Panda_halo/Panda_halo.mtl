@@ -1,0 +1,3 @@
+newmtl Panda_halo
+Kd 1 1 1
+map_Kd Panda_halo_texture.png

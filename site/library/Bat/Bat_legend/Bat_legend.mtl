@@ -1,0 +1,3 @@
+newmtl Bat_legend
+Kd 1 1 1
+map_Kd Bat_legend_texture.png

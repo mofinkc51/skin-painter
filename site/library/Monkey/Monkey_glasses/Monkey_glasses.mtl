@@ -1,0 +1,3 @@
+newmtl Monkey_glasses
+Kd 1 1 1
+map_Kd Monkey_glasses_texture.png

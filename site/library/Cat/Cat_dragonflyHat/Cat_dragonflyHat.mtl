@@ -1,0 +1,3 @@
+newmtl Cat_dragonflyHat
+Kd 1 1 1
+map_Kd Cat_dragonflyHat_texture.png

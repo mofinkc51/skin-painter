@@ -1,0 +1,3 @@
+newmtl Mole_commonCannon
+Kd 1 1 1
+map_Kd Mole_commonCannon_texture.png

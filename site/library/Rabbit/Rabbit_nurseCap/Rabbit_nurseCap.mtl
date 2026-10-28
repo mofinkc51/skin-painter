@@ -1,0 +1,3 @@
+newmtl Rabbit_nurseCap
+Kd 1 1 1
+map_Kd Rabbit_nurseCap_texture.png

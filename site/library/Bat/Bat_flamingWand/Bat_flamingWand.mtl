@@ -1,0 +1,3 @@
+newmtl Bat_flamingWand
+Kd 1 1 1
+map_Kd Bat_flamingWand_texture.png

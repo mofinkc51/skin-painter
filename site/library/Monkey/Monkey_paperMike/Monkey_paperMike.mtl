@@ -1,0 +1,3 @@
+newmtl Monkey_paperMike
+Kd 1 1 1
+map_Kd Monkey_paperMike_texture.png

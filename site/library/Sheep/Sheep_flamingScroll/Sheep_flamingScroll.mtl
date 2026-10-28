@@ -1,0 +1,3 @@
+newmtl Sheep_flamingScroll
+Kd 1 1 1
+map_Kd Sheep_flamingScroll_texture.png

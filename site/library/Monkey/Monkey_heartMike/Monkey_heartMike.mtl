@@ -1,0 +1,3 @@
+newmtl Monkey_heartMike
+Kd 1 1 1
+map_Kd Monkey_heartMike_texture.png

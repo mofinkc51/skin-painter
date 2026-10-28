@@ -1,0 +1,3 @@
+newmtl Rabbit_waterGun
+Kd 1 1 1
+map_Kd Rabbit_waterGun_texture.png

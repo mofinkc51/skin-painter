@@ -1,0 +1,3 @@
+newmtl Wolf_commonSword
+Kd 1 1 1
+map_Kd Wolf_commonSword_texture.png

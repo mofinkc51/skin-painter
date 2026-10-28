@@ -1,0 +1,3 @@
+newmtl Wolf_paperSword
+Kd 1 1 1
+map_Kd Wolf_paperSword_texture.png

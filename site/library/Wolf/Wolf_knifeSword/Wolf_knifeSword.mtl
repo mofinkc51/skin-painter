@@ -1,0 +1,3 @@
+newmtl Wolf_knifeSword
+Kd 1 1 1
+map_Kd Wolf_knifeSword_texture.png

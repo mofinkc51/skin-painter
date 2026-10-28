@@ -1,0 +1,3 @@
+newmtl Mole_timeCannon
+Kd 1 1 1
+map_Kd Mole_timeCannon_texture.png

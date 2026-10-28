@@ -1,0 +1,3 @@
+newmtl Cat_frozenMask
+Kd 1 1 1
+map_Kd Cat_frozenMask_texture.png

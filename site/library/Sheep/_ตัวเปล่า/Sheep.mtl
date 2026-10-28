@@ -1,0 +1,3 @@
+newmtl Sheep
+Kd 1 1 1
+map_Kd Sheep_texture.png

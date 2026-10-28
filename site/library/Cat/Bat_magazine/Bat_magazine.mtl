@@ -1,0 +1,3 @@
+newmtl Bat_magazine
+Kd 1 1 1
+map_Kd Bat_magazine_texture.png

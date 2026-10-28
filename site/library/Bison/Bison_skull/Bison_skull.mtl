@@ -1,0 +1,3 @@
+newmtl Bison_skull
+Kd 1 1 1
+map_Kd Bison_skull_texture.png

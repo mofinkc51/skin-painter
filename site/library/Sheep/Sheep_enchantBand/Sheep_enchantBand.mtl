@@ -1,0 +1,3 @@
+newmtl Sheep_enchantBand
+Kd 1 1 1
+map_Kd Sheep_enchantBand_texture.png

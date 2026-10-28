@@ -1,0 +1,3 @@
+newmtl Wolf_fireSword
+Kd 1 1 1
+map_Kd Wolf_fireSword_texture.png

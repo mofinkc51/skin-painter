@@ -1,0 +1,3 @@
+newmtl Cat_cakeHat
+Kd 1 1 1
+map_Kd Cat_cakeHat_texture.png

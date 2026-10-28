@@ -1,0 +1,3 @@
+newmtl Sheep_waitress
+Kd 1 1 1
+map_Kd Sheep_waitress_texture.png
