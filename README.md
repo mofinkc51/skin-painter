@@ -6,6 +6,18 @@
 
 ## วิธีใช้
 
+### คลังเริ่มต้น (ไฟล์ที่เผยแพร่ได้)
+
+ไฟล์ที่วางไว้ใน `site/library/` จะขึ้นเป็นคลังเริ่มต้นทันทีที่เปิดเว็บ โดยไม่ต้องเลือกโฟลเดอร์ (เปิดชิ้นล่าสุดที่เคยใช้ หรือชิ้นแรกถ้าเพิ่งเข้ามาครั้งแรก)
+โครงสร้างเหมือน 3D_Export: `site/library/<ตัวละคร>/<ชื่อชิ้น>/<ชื่อ>.obj` + `<ชื่อ>_texture.png`
+
+- ใส่เฉพาะไฟล์ที่คุณมีสิทธิ์เผยแพร่ ไฟล์ทุกไฟล์ในนี้อยู่บนเว็บสาธารณะ
+- push แล้ว workflow จะรัน `scripts/build-library.mjs` สร้าง `site/library/index.json` ให้เอง
+- ทดสอบในเครื่อง: `node scripts/build-library.mjs` แล้ว `python -m http.server -d site 8000`
+- ชี้ไปคลังอื่นได้ด้วย `?lib=<url ของ index.json>` ต่อท้ายลิงก์เว็บ
+
+ในคลังชุดมีปุ่มสลับระหว่าง **คลังเริ่มต้น** กับ **โฟลเดอร์บนเครื่อง** (เช่น 3D_Export ที่ใช้ส่วนตัว)
+
 ### เปิดชุดจากโฟลเดอร์ 3D_Export (คลังชุด)
 
 1. กด **คลังชุด** → **เลือกโฟลเดอร์ 3D_Export** (เลือกโฟลเดอร์ที่มีโฟลเดอร์ตัวละครอย่าง `Cat`, `Bat` อยู่ข้างใน)
@@ -48,6 +60,8 @@
 
 ```
 site/index.html                  ตัวเว็บทั้งหมด (ไฟล์เดียว, ใช้ three.js r128 จาก cdnjs)
+site/library/                    คลังเริ่มต้น (.obj + _texture.png ที่เผยแพร่ได้)
+scripts/build-library.mjs        สร้าง site/library/index.json จากไฟล์ในคลัง
 .github/workflows/pages.yml      deploy โฟลเดอร์ site/ ไป GitHub Pages ทุกครั้งที่ push เข้า main
                                  (ต้นฉบับอยู่ที่ deploy/pages.yml สคริปต์ publish จะคัดลอกให้)
 scripts/publish.ps1 / .sh        สร้าง repo บน GitHub, push และเปิด Pages ในครั้งแรก

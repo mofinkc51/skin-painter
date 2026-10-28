@@ -24,6 +24,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Check site files
         run: test -f site/index.html
+      - name: Build default library index
+        run: node scripts/build-library.mjs site/library
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

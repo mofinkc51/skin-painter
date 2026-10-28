@@ -87,7 +87,7 @@ select{font:inherit;font-size:13px;border:1px solid var(--line);background:var(-
 .lib-empty code,.mono{font-family:var(--font-mono);font-size:12px}
 .lib-src{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;font-size:12.5px;color:var(--muted)}
 .lib-src strong{color:var(--fg);font-family:var(--font-mono);font-weight:500}
-.lib-src .btn{padding:3px 9px;font-size:12px;margin-left:auto}
+.lib-src .btn,#srcBtns .btn{padding:3px 9px;font-size:12px}
 .search{font:inherit;font-size:14px;width:100%;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:8px;padding:8px 10px}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chip{font:inherit;font-size:12.5px;border:1px solid var(--line);background:var(--chip);color:var(--fg);border-radius:999px;padding:4px 10px;cursor:pointer;display:inline-flex;gap:5px;align-items:baseline}
@@ -224,7 +224,12 @@ select{font:inherit;font-size:13px;border:1px solid var(--line);background:var(-
       <p class="lib-note">ไฟล์ถูกอ่านในเบราว์เซอร์บนเครื่องคุณเท่านั้น ไม่มีการอัปโหลด ใน Chrome/Edge เว็บจะจำโฟลเดอร์ไว้และบันทึกงานลงโฟลเดอร์ <code>_skins</code> ได้</p>
     </div>
     <div id="libBody" hidden style="display:flex;flex-direction:column;gap:12px">
-      <div class="lib-src">โฟลเดอร์ <strong id="libRoot"></strong><span id="libCount"></span><button class="btn" id="libChange">เปลี่ยนโฟลเดอร์</button></div>
+      <div class="lib-src"><span id="libSrcLabel">โฟลเดอร์</span> <strong id="libRoot"></strong><span id="libCount"></span></div>
+      <div class="chips" id="srcBtns">
+        <button class="btn" id="useDefault" hidden>ใช้คลังเริ่มต้น</button>
+        <button class="btn" id="reopenFolder2" hidden>เปิดโฟลเดอร์เดิม</button>
+        <button class="btn" id="libChange">เลือกโฟลเดอร์บนเครื่อง</button>
+      </div>
       <input class="search" type="search" id="libSearch" placeholder="ค้นหาชื่อชิ้น เช่น helmet, legend" autocomplete="off">
       <div class="group"><span class="label">ตัวละคร</span><div class="chips" id="charChips"></div></div>
       <div class="group"><span class="label">ประเภท (เดาจากชื่อไฟล์)</span><div class="chips" id="typeChips"></div></div>
@@ -652,10 +657,13 @@ const lib = (() => {
     n=n.replace(/_/g,' ').replace(/([a-z0-9])([A-Z])/g,'$1 $2').trim();
     return n.charAt(0).toUpperCase()+n.slice(1);
   }
-  const getFile = ref => ref instanceof File ? Promise.resolve(ref) : ref.getFile();
+  const getFile = ref => typeof ref==='string'
+    ? fetch(ref).then(r=>{ if(!r.ok) throw new Error(`โหลดไฟล์ไม่ได้ (${r.status})`); return r.blob(); })
+    : ref instanceof File ? Promise.resolve(ref) : ref.getFile();
+  const LIB_URL = (()=>{ try{ return new URLSearchParams(location.search).get('lib') || 'library/index.json'; }catch(e){ return 'library/index.json'; } })();
 
   // ---- scanning ----
-  function build(entries){ // entries: [{path:[dirs...], name, ref}]
+  function build(entries, kind='local'){ // entries: [{path:[dirs...], name, ref}]
     const dirs=new Map();
     for(const e of entries){ const key=e.path.join('/'); if(!dirs.has(key)) dirs.set(key,{path:e.path,files:[]}); dirs.get(key).files.push(e); }
     const items=[], edited=new Map();
@@ -669,7 +677,7 @@ const lib = (() => {
                  || pngs.find(f=>f.name.toLowerCase().startsWith(base.toLowerCase()))
                  || (objs.length===1 ? pngs[0] : null) || null;
         const folder=path[path.length-1]||base;
-        const it={ id: path.join('/')+(objs.length>1?'#'+base:''), dir:path, char: path.length>=2?path[path.length-2]:'(ราก)', folder: objs.length>1?base:folder,
+        const it={ id: kind+':'+path.join('/')+(objs.length>1?'#'+base:''), dir:path, char: path.length>=2?path[path.length-2]:'(ราก)', folder: objs.length>1?base:folder,
           base, obj:o.ref, objName:o.name, png:png?png.ref:null, pngName: png?png.name:base+'_texture.png' };
         it.label=pretty(it); it.type=typeOf(it.folder); items.push(it);
       }
@@ -685,22 +693,60 @@ const lib = (() => {
       else if(/\.(obj|png)$/i.test(name)) out.push({path, name, ref:h});
     }
   }
-  function load(items, edited, rootName){
+  function load(items, edited, rootName, kind='local', {quiet=false}={}){
     for(const u of S.urls.values()) URL.revokeObjectURL(u); S.urls.clear();
-    S.items=items; S.edited=edited; S.rootName=rootName; S.byId=new Map(items.map(i=>[i.id,i]));
+    if(kind==='default') S.root=null;
+    S.kind=kind; S.items=items; S.edited=edited; S.rootName=rootName; S.byId=new Map(items.map(i=>[i.id,i]));
+    $('libSrcLabel').textContent = kind==='default' ? 'คลัง' : 'โฟลเดอร์';
+    srcButtons();
     S.char = LS.get('sp-char','all'); if(S.char!=='all' && !items.some(i=>i.char===S.char)) S.char='all';
     $('libEmpty').hidden=true; $('libBody').hidden=false;
     $('libRoot').textContent=rootName; $('libCount').textContent=` · ${items.length} ชิ้น · มี PNG ${items.filter(i=>i.png).length}`;
     $('libBtnCount').textContent=items.length; $('saveFolderBtn').hidden=!S.root;
     render();
+    if(quiet) return;
     if(!items.length) toast('ไม่พบไฟล์ .obj ในโฟลเดอร์นี้ — ลองเลือกโฟลเดอร์ 3D_Export ที่มีโฟลเดอร์ตัวละครอยู่ข้างใน');
     else toast(`พบ ${items.length} ชิ้นใน ${new Set(items.map(i=>i.char)).size} ตัวละคร`);
+  }
+  function openLast(fallbackFirst){
+    const last=LS.get('sp-last',null);
+    if(last && S.byId.has(last)) return open(S.byId.get(last),{quiet:true});
+    if(fallbackFirst){ const first=S.items.find(i=>i.png)||S.items[0]; if(first) return open(first,{quiet:true}); }
+  }
+  let savedHandle=null;
+  function srcButtons(){
+    $('useDefault').hidden = !(S.defaultLib && S.defaultLib.items.length && S.kind!=='default');
+    $('reopenFolder2').hidden = !(savedHandle && !(S.kind==='local' && S.root));
+    if(savedHandle) $('reopenFolder2').textContent=`เปิดโฟลเดอร์เดิม (${savedHandle.name})`;
+    $('libChange').textContent = S.kind==='local' ? 'เปลี่ยนโฟลเดอร์' : 'เลือกโฟลเดอร์บนเครื่อง';
+  }
+
+  // ---- default library shipped with the site: library/index.json ----
+  async function loadDefault(){
+    let man;
+    try{ const r=await fetch(LIB_URL,{cache:'no-cache'}); if(!r.ok) return false; man=await r.json(); }catch(e){ return false; }
+    if(!man || !Array.isArray(man.items) || !man.items.length) return false;
+    const baseURL=new URL(LIB_URL, location.href);
+    const items=man.items.filter(x=>x && Array.isArray(x.path) && x.obj).map(x=>{
+      const path=x.path.map(String), objName=decodeURIComponent(String(x.obj).split('/').pop());
+      const base=objName.replace(/\.obj$/i,'');
+      const it={ id:'default:'+path.join('/')+'#'+base, dir:path, char: path.length>=2?path[path.length-2]:'(ราก)', folder: path[path.length-1]||base,
+        base, obj:new URL(x.obj,baseURL).href, objName, png: x.png?new URL(x.png,baseURL).href:null, pngName: x.pngName || base+'_texture.png' };
+      it.label=pretty(it); it.type=typeOf(it.folder); return it; });
+    items.sort((a,b)=> a.char.localeCompare(b.char) || (a.label==='ตัวเปล่า'?-1:b.label==='ตัวเปล่า'?1:a.label.localeCompare(b.label)));
+    S.defaultLib={ items, name: man.name || 'คลังเริ่มต้น' };
+    return true;
+  }
+  async function useDefault(opts={}){
+    if(!S.defaultLib) return;
+    if(dirty && S.current && !(await confirmLeave())) return;
+    load(S.defaultLib.items, new Map(), S.defaultLib.name, 'default', opts);
   }
   async function scanHandle(handle){
     toast('กำลังอ่านโฟลเดอร์…');
     const out=[]; await walk(handle,[],out,0);
-    S.root=handle; const {items,edited}=build(out); load(items,edited,handle.name);
-    const last=LS.get('sp-last',null); if(last && S.byId.has(last) && !S.current) open(S.byId.get(last),{quiet:true});
+    S.root=handle; savedHandle=handle; const {items,edited}=build(out,'local'); load(items,edited,handle.name,'local');
+    openLast(false);
   }
   async function pick(){
     if(canPick){
@@ -714,13 +760,13 @@ const lib = (() => {
     const out=[]; let rootName='';
     for(const f of files){ if(!/\.(obj|png)$/i.test(f.name)) continue; const parts=(f.webkitRelativePath||f.name).split('/'); rootName=rootName||parts[0];
       out.push({path:parts.slice(1,-1), name:f.name, ref:f}); }
-    S.root=null; const {items,edited}=build(out); load(items,edited,rootName||'โฟลเดอร์');
-    const last=LS.get('sp-last',null); if(last && S.byId.has(last) && !S.current) open(S.byId.get(last),{quiet:true});
+    S.root=null; const {items,edited}=build(out,'local'); load(items,edited,rootName||'โฟลเดอร์','local');
+    openLast(false);
   };
   async function reopen(){
-    const h=await idbGet('root'); if(!h){ pick(); return; }
+    const h=savedHandle||await idbGet('root'); if(!h){ pick(); return; }
     try{ const p=await h.requestPermission({mode:'read'}); if(p!=='granted'){ toast('ไม่ได้รับสิทธิ์อ่านโฟลเดอร์ — เลือกใหม่อีกครั้ง'); return; } await scanHandle(h); }
-    catch(e){ toast('เปิดโฟลเดอร์เดิมไม่ได้ — เลือกใหม่อีกครั้ง'); $('reopenFolder').hidden=true; }
+    catch(e){ toast('เปิดโฟลเดอร์เดิมไม่ได้ — เลือกใหม่อีกครั้ง'); $('reopenFolder').hidden=true; savedHandle=null; srcButtons(); }
   }
 
   // ---- rendering ----
@@ -756,6 +802,7 @@ const lib = (() => {
     const it=S.byId.get(img.dataset.id); if(!it) return;
     const ref=S.edited.get(it.dir.join('/'))||it.png; if(!ref) return;
     const key=it.id+(S.edited.has(it.dir.join('/'))?'#e':'');
+    if(typeof ref==='string'){ img.loading='lazy'; img.src=ref; return; }
     try{ if(!S.urls.has(key)) S.urls.set(key, URL.createObjectURL(await getFile(ref))); img.src=S.urls.get(key); }catch(e){}
   }
   function card(it){
@@ -780,7 +827,8 @@ const lib = (() => {
     if(it){ mk('char',it.char); mk('',it.label,'strong'); mk('raw',it.pngName);
       if(S.edited.has(it.dir.join('/'))) mk('badge edited','แก้แล้ว'); if(!it.png) mk('badge','ไม่มี PNG ในเกม');
       const list=S.filtered.includes(it)?S.filtered:S.items, i=list.indexOf(it);
-      $('itemPos').textContent=`${i+1} / ${list.length}`; $('prevItem').disabled=i<=0; $('nextItem').disabled=i>=list.length-1;
+      if(i<0){ $('itemPos').textContent=''; $('prevItem').disabled=true; $('nextItem').disabled=!list.length; }
+      else { $('itemPos').textContent=`${i+1} / ${list.length}`; $('prevItem').disabled=i<=0; $('nextItem').disabled=i>=list.length-1; }
     } else {
       mk('char',S.single?'ไฟล์เดี่ยว':'ตัวอย่าง'); mk('',S.single||'กล่อง UV','strong');
       if(!S.items.length) mk('raw','เลือกโฟลเดอร์ 3D_Export เพื่อเปิดชุดจากเกม');
@@ -863,15 +911,20 @@ const lib = (() => {
     const c=document.querySelector('.card[aria-current="true"]'); if(c) c.scrollIntoView({block:'center'}); }
   function close(){ $('drawer').hidden=true; $('scrim').hidden=true; if(lastFocus&&lastFocus.focus) lastFocus.focus(); }
   $('libBtn').onclick=openDrawer; $('drawerClose').onclick=close; $('scrim').onclick=close;
-  $('pickFolder').onclick=pick; $('libChange').onclick=pick; $('reopenFolder').onclick=reopen;
+  $('pickFolder').onclick=pick; $('libChange').onclick=pick; $('reopenFolder').onclick=reopen; $('reopenFolder2').onclick=reopen;
+  $('useDefault').onclick=()=>useDefault();
   $('prevItem').onclick=()=>step(-1); $('nextItem').onclick=()=>step(1);
   let qt; $('libSearch').addEventListener('input',e=>{ clearTimeout(qt); qt=setTimeout(()=>{ S.q=e.target.value.trim(); render(); },120); });
   $('onlyPng').onchange=e=>{ S.onlyPng=e.target.checked; render(); };
   $('onlyEdited').onchange=e=>{ S.onlyEdited=e.target.checked; render(); };
   addEventListener('beforeunload',e=>{ if(dirty){ e.preventDefault(); e.returnValue=''; } });
-  (async()=>{ if(canPick){ const h=await idbGet('root'); if(h){ $('reopenFolder').hidden=false; $('reopenFolder').textContent=`เปิดโฟลเดอร์เดิม (${h.name})`; } } })();
+  (async()=>{ if(canPick){ const h=await idbGet('root'); if(h){ savedHandle=h; $('reopenFolder').hidden=false; $('reopenFolder').textContent=`เปิดโฟลเดอร์เดิม (${h.name})`; srcButtons(); } } })();
 
-  return { open, step, close, confirmLeave, saveToFolder,
+  async function init(){
+    if(!(await loadDefault())) return false;
+    await useDefault({quiet:true}); await openLast(true); return true;
+  }
+  return { open, step, close, confirmLeave, saveToFolder, init,
     setCurrent(it,single){ S.current=it; S.single=single||''; updateBar(); } };
 })();
 
@@ -909,6 +962,7 @@ function sampleTexture(){
     setTextureFromImage(img,'sample_texture.png');
   }catch(e){ toast('โหลดตัวอย่างไม่ได้ — เปิดไฟล์ของคุณได้เลย'); }
   loop();
+  try{ await lib.init(); }catch(e){}
   try{ downloads = await (window.claude && window.claude.use ? window.claude.use('downloads') : null); }catch(e){ downloads=null; }
 })();
 })();
