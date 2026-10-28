@@ -66,6 +66,21 @@ select{font:inherit;font-size:13px;border:1px solid var(--line);background:var(-
 .drop{position:fixed;inset:0;display:grid;place-items:center;background:color-mix(in srgb,var(--bg) 82%,transparent);border:3px dashed var(--accent);font-family:var(--font-display);font-size:22px;z-index:20}
 .toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:8px 14px;border-radius:8px;font-size:13px;z-index:30;max-width:calc(100% - 32px)}
 .adjust{border-top:1px solid var(--line);padding-top:12px}
+.tips{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.tip{font:inherit;font-size:11.5px;border:1px solid var(--line);background:var(--chip);color:var(--fg);border-radius:8px;padding:4px 2px 5px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
+.tip canvas{width:46px;height:20px;display:block}
+.tip[aria-checked="true"]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent);background:var(--panel);font-weight:600}
+.seg{display:flex;flex-wrap:wrap;gap:4px}
+.seg button{font:inherit;font-size:12px;border:1px solid var(--line);background:var(--chip);color:var(--fg);border-radius:999px;padding:3px 9px;cursor:pointer}
+.seg button[aria-checked="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-fg);font-weight:600}
+.tip:focus-visible,.seg button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.preview{width:100%;height:56px;display:block;border-radius:8px;border:1px solid var(--line);background:repeating-conic-gradient(var(--chip) 0 25%,var(--panel) 0 50%) 0 0/12px 12px}
+.pen-status{display:flex;align-items:center;gap:8px;font-size:12.5px}
+.pen-status #penType{flex:0 0 auto;font-weight:600}
+.pen-status #penType.off{color:var(--muted);font-weight:400}
+.meter{flex:1;height:8px;border-radius:999px;background:var(--chip);border:1px solid var(--line);overflow:hidden;min-width:40px}
+.meter span{display:block;height:100%;width:0;background:var(--accent);transition:width .05s linear}
+.pen-status output{font-family:var(--font-mono);font-size:11.5px;width:38px;text-align:right;font-variant-numeric:tabular-nums}
 .itembar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:6px 8px}
 .itembar .crumb{flex:1 1 220px;min-width:0;display:flex;align-items:baseline;gap:6px;overflow:hidden;white-space:nowrap}
 .itembar .crumb .char{color:var(--muted);font-size:12.5px}
@@ -146,12 +161,12 @@ select{font:inherit;font-size:13px;border:1px solid var(--line);background:var(-
     <div class="group">
       <span class="label">เครื่องมือ</span>
       <div class="tools" role="group" aria-label="เครื่องมือ">
-        <button class="tool" data-tool="brush" aria-pressed="true" title="B">พู่กัน</button>
-        <button class="tool" data-tool="tint" aria-pressed="false" title="T">ย้อมสี</button>
-        <button class="tool" data-tool="restore" aria-pressed="false" title="E">คืนต้นฉบับ</button>
-        <button class="tool" data-tool="recolor" aria-pressed="false" title="R">เปลี่ยนโทน</button>
-        <button class="tool" data-tool="picker" aria-pressed="false" title="I">ดูดสี</button>
-        <button class="tool" data-tool="view" aria-pressed="false" title="V">หมุนดู</button>
+        <button class="tool" data-tool="brush" aria-pressed="true" title="พู่กัน (B)">พู่กัน</button>
+        <button class="tool" data-tool="eraser" aria-pressed="false" title="ยางลบ คืนภาพต้นฉบับ (E)">ยางลบ</button>
+        <button class="tool" data-tool="fill" aria-pressed="false" title="ถังสี (G)">ถังสี</button>
+        <button class="tool" data-tool="recolor" aria-pressed="false" title="เปลี่ยนโทน (R)">เปลี่ยนโทน</button>
+        <button class="tool" data-tool="picker" aria-pressed="false" title="ดูดสี (I หรือกด Alt ค้าง)">ดูดสี</button>
+        <button class="tool" data-tool="view" aria-pressed="false" title="หมุนดู (V)">หมุนดู</button>
       </div>
       <p class="hint" id="toolHint"></p>
     </div>
@@ -162,11 +177,48 @@ select{font:inherit;font-size:13px;border:1px solid var(--line);background:var(-
       <div class="recent" id="recent" aria-label="สีที่ใช้ล่าสุด"></div>
     </div>
 
-    <div class="group" id="brushGroup">
+    <div class="group" id="tipGroup">
       <span class="label">หัวพู่กัน</span>
+      <div class="tips" role="radiogroup" aria-label="หัวพู่กัน" id="tips">
+        <button class="tip" role="radio" data-tip="pen" title="ปากกา (1)"><canvas width="92" height="40"></canvas>ปากกา</button>
+        <button class="tip" role="radio" data-tip="soft" title="แอร์บรัช นุ่ม (2)"><canvas width="92" height="40"></canvas>นุ่ม</button>
+        <button class="tip" role="radio" data-tip="pixel" title="ดินสอพิกเซล คมทุกจุด (3)"><canvas width="92" height="40"></canvas>พิกเซล</button>
+        <button class="tip" role="radio" data-tip="spray" title="สเปรย์ เม็ดสี (4)"><canvas width="92" height="40"></canvas>สเปรย์</button>
+        <button class="tip" role="radio" data-tip="grunge" title="คราบ ผ้าเก่า (5)"><canvas width="92" height="40"></canvas>คราบ</button>
+        <button class="tip" role="radio" data-tip="stitch" title="เส้นเย็บ (6)"><canvas width="92" height="40"></canvas>เส้นเย็บ</button>
+      </div>
+    </div>
+
+    <div class="group" id="modeGroup">
+      <span class="label">ลงสีแบบ</span>
+      <div class="seg" role="radiogroup" aria-label="ลงสีแบบ" id="modes">
+        <button role="radio" data-mode="normal">ทับ</button>
+        <button role="radio" data-mode="tint">ย้อม</button>
+        <button role="radio" data-mode="shade">เงา</button>
+        <button role="radio" data-mode="light">แสง</button>
+        <button role="radio" data-mode="blur">เบลอ</button>
+        <button role="radio" data-mode="smudge">ป้าย</button>
+      </div>
+      <p class="hint" id="modeHint"></p>
+    </div>
+
+    <div class="group" id="brushGroup">
+      <canvas class="preview" id="brushPreview" height="112" aria-label="ตัวอย่างเส้นตามแรงกด"></canvas>
       <div class="row"><label for="size">ขนาด (px)</label><input type="range" id="size" min="1" max="120" value="14"><output id="sizeOut">14</output></div>
       <div class="row"><label for="opacity">ความทึบ</label><input type="range" id="opacity" min="5" max="100" value="85"><output id="opacityOut">85%</output></div>
-      <div class="row"><label for="hardness">ความคม</label><input type="range" id="hardness" min="0" max="100" value="60"><output id="hardnessOut">60%</output></div>
+      <div class="row" id="hardRow"><label for="hardness">ความคม</label><input type="range" id="hardness" min="0" max="100" value="60"><output id="hardnessOut">60%</output></div>
+      <div class="row"><label for="smooth">กันมือสั่น</label><input type="range" id="smooth" min="0" max="10" value="2"><output id="smoothOut">2</output></div>
+      <p class="hint">กด Shift แล้วคลิก เพื่อลากเส้นตรงจากจุดล่าสุด</p>
+    </div>
+
+    <div class="group" id="fillGroup" hidden>
+      <span class="label">ถังสี</span>
+      <div class="seg" role="radiogroup" aria-label="เติมตาม" id="fillBy">
+        <button role="radio" data-by="island" aria-checked="true">ทั้งชิ้นส่วน UV</button>
+        <button role="radio" data-by="color" aria-checked="false">สีใกล้เคียง</button>
+      </div>
+      <div class="row" id="fillTolRow" hidden><label for="fillTol">ความกว้างสี</label><input type="range" id="fillTol" min="2" max="60" value="16"><output id="fillTolOut">16</output></div>
+      <p class="hint" id="fillHint"></p>
     </div>
 
     <div class="group" id="recolorGroup" hidden>
@@ -175,6 +227,17 @@ select{font:inherit;font-size:13px;border:1px solid var(--line);background:var(-
       <label class="check"><input type="checkbox" id="contig" checked> เฉพาะส่วนที่ติดกัน</label>
       <label class="check"><input type="checkbox" id="keepShade" checked> รักษาแสงเงาเดิม</label>
       <p class="hint">คลิกที่สีบนโมเดลหรือบนภาพ สีที่ใกล้เคียงจะเปลี่ยนเป็นสีที่เลือก ปรับแถบเลื่อนแล้วผลจะอัปเดตทันที</p>
+    </div>
+
+    <div class="group adjust" id="penGroup">
+      <span class="label">เมาส์ปากกา</span>
+      <div class="pen-status" aria-live="polite"><span id="penType" class="off">ยังไม่พบปากกา</span><span class="meter"><span id="penMeter"></span></span><output id="penVal">—</output></div>
+      <label class="check"><input type="checkbox" id="penSize" checked> แรงกดปรับขนาดเส้น</label>
+      <label class="check"><input type="checkbox" id="penAlpha"> แรงกดปรับความทึบ</label>
+      <div class="row"><label for="penMin">ขนาดตอนกดเบา</label><input type="range" id="penMin" min="5" max="100" value="20"><output id="penMinOut">20%</output></div>
+      <div class="row"><label for="penCurve">ความไวแรงกด</label><input type="range" id="penCurve" min="1" max="9" value="5"><output id="penCurveOut">ปกติ</output></div>
+      <label class="check"><input type="checkbox" id="palm" checked> ไม่รับนิ้วหรือฝ่ามือขณะใช้ปากกา</label>
+      <p class="hint">ปลายยางลบของปากกาใช้เป็นยางลบได้ทันที · ปุ่มข้างปากกาลากเพื่อเลื่อนภาพ · บน Windows ถ้าแรงกดไม่ขึ้น ให้เปิด Windows Ink ในโปรแกรมตั้งค่าปากกา</p>
     </div>
 
     <div class="group adjust">
@@ -324,7 +387,7 @@ function setModel(text){
   if(mesh){ scene.remove(mesh); mesh.geometry.dispose(); scene.remove(wire); }
   mesh=new THREE.Mesh(g, $('flatToggle').checked?flatMat:litMat); scene.add(mesh);
   wire=new THREE.Mesh(g, wireMat); wire.visible=$('wireToggle').checked; scene.add(wire);
-  uvTris=uv;
+  uvTris=uv; islands=buildIslands(uv);
   g.computeBoundingSphere(); const bs=g.boundingSphere;
   orbit.t0.copy(bs.center); orbit.r0=bs.radius/Math.tan(THREE.MathUtils.degToRad(17.5))*1.45;
   resetCam(); need2d=true;
@@ -365,59 +428,240 @@ addEventListener('dragover',e=>e.preventDefault());
 addEventListener('drop',e=>{ e.preventDefault(); dragDepth=0; $('drop').hidden=true; if(e.dataTransfer.files.length) handleFiles(e.dataTransfer.files); });
 
 /* ---------- UI state ---------- */
-let tool='brush';
+let tool='brush', tip='pen', mode='normal', fillBy='island';
 const hints={
-  brush:'ระบายสีทับลงไปตรง ๆ ทั้งบนโมเดลและบนภาพ',
-  tint:'เปลี่ยนสีแต่เก็บลายและแสงเงาเดิมไว้ เหมาะกับการย้อมผ้าหรือเกราะ',
-  restore:'ลบสิ่งที่ระบายไป ให้ส่วนนั้นกลับเป็นภาพต้นฉบับ',
+  brush:'ระบายบนโมเดลหรือบนภาพ เลือกหัวพู่กันและวิธีลงสีด้านล่าง',
+  eraser:'ลบสิ่งที่ระบายไป ให้ส่วนนั้นกลับเป็นภาพต้นฉบับ',
+  fill:'คลิกครั้งเดียวเพื่อเติมสีทั้งชิ้นส่วน หรือเฉพาะสีที่ใกล้เคียงกัน',
   recolor:'คลิกสีที่ต้องการเปลี่ยน ทุกจุดที่สีใกล้เคียงจะกลายเป็นสีที่เลือก',
-  picker:'คลิกเพื่อดูดสีจากโมเดลหรือภาพ',
+  picker:'คลิกเพื่อดูดสีจากโมเดลหรือภาพ (ตอนใช้พู่กัน กด Alt ค้างแล้วคลิกก็ได้)',
   view:'ลากเพื่อหมุนดูโมเดลอย่างเดียว ไม่ระบาย'
 };
+const modeHints={
+  normal:'ลงสีทับตรง ๆ', tint:'เปลี่ยนสีแต่เก็บลายและแสงเงาเดิม เหมาะกับย้อมผ้าหรือเกราะ',
+  shade:'ทำให้มืดลงด้วยสีที่เลือก ใช้ลงเงาหรือคราบ', light:'ทำให้สว่างขึ้นด้วยสีที่เลือก ใช้ลงไฮไลต์',
+  blur:'ทำให้ส่วนที่ระบายนุ่มลง ไม่ใช้สี', smudge:'ลากป้ายสีเดิมไปตามทางที่ระบาย'
+};
+const PAINTS=['brush','eraser'];
 function setTool(t){ tool=t; document.querySelectorAll('.tool').forEach(b=>b.setAttribute('aria-pressed', b.dataset.tool===t)); $('toolHint').textContent=hints[t];
-  $('brushGroup').hidden=!['brush','tint','restore'].includes(t); $('recolorGroup').hidden=t!=='recolor'; need2d=true; }
+  const paints=PAINTS.includes(t);
+  $('tipGroup').hidden=!paints; $('brushGroup').hidden=!paints;
+  $('modeGroup').hidden=!(t==='brush'||t==='fill'); $('fillGroup').hidden=t!=='fill'; $('recolorGroup').hidden=t!=='recolor';
+  document.querySelectorAll('#modes button').forEach(b=>{ b.hidden = t==='fill' && b.dataset.mode==='smudge'; });
+  if(t==='fill' && mode==='smudge') setMode('normal');
+  need2d=true; drawPreview(); }
+function setTip(n){ tip=n; document.querySelectorAll('.tip').forEach(b=>b.setAttribute('aria-checked', b.dataset.tip===n)); $('hardRow').hidden=n!=='pen'; drawPreview(); }
+function setMode(m){ mode=m; document.querySelectorAll('#modes button').forEach(b=>b.setAttribute('aria-checked', b.dataset.mode===m)); $('modeHint').textContent=modeHints[m]; }
+function setFillBy(b){ fillBy=b; document.querySelectorAll('#fillBy button').forEach(x=>x.setAttribute('aria-checked', x.dataset.by===b)); $('fillTolRow').hidden=b!=='color';
+  $('fillHint').textContent = b==='island' ? 'เติมทั้งชิ้นผ้าหรือชิ้นเกราะที่คลิก ตามเส้น UV' : 'เติมเฉพาะบริเวณที่สีใกล้เคียงกับจุดที่คลิก'; }
 document.querySelectorAll('.tool').forEach(b=>b.onclick=()=>setTool(b.dataset.tool));
+document.querySelectorAll('.tip').forEach(b=>b.onclick=()=>setTip(b.dataset.tip));
+document.querySelectorAll('#modes button').forEach(b=>b.onclick=()=>setMode(b.dataset.mode));
+document.querySelectorAll('#fillBy button').forEach(b=>b.onclick=()=>setFillBy(b.dataset.by));
 const bindOut=(id,fmt)=>{ const el=$(id),o=$(id+'Out'); const f=()=>o.textContent=fmt(el.value); el.addEventListener('input',f); f(); };
-bindOut('size',v=>v); bindOut('opacity',v=>v+'%'); bindOut('hardness',v=>v+'%'); bindOut('tol',v=>v);
+bindOut('size',v=>v); bindOut('opacity',v=>v+'%'); bindOut('hardness',v=>v+'%'); bindOut('tol',v=>v); bindOut('fillTol',v=>v); bindOut('smooth',v=>v);
+bindOut('penMin',v=>v+'%'); bindOut('penCurve',v=>({1:'กดแรง',2:'กดแรง',3:'หนักขึ้น',4:'หนักขึ้น',5:'ปกติ',6:'ไวขึ้น',7:'ไวขึ้น',8:'ไวมาก',9:'ไวมาก'})[v]);
 bindOut('adjH',v=>v+'°'); bindOut('adjS',v=>v+'%'); bindOut('adjV',v=>v);
-$('color').addEventListener('input',()=>{ $('hex').textContent=$('color').value.toUpperCase(); if(tool==='recolor') rerunRecolor(); });
+['size','opacity','hardness','penMin','penCurve','penSize','penAlpha'].forEach(id=>$(id).addEventListener('input',()=>{ drawPreview(); need2d=true; }));
+$('color').addEventListener('input',()=>{ $('hex').textContent=$('color').value.toUpperCase(); if(tool==='recolor') rerunRecolor(); drawPreview(); });
 let recent=[];
 function rememberColor(){ const c=$('color').value; recent=[c,...recent.filter(x=>x!==c)].slice(0,12);
   $('recent').innerHTML=''; for(const x of recent){ const b=document.createElement('button'); b.style.background=x; b.title=x; b.setAttribute('aria-label','ใช้สี '+x);
-    b.onclick=()=>{ $('color').value=x; $('hex').textContent=x.toUpperCase(); if(tool==='recolor') rerunRecolor(); }; $('recent').appendChild(b);} }
-function setColor(r,g,b){ const h='#'+[r,g,b].map(x=>x.toString(16).padStart(2,'0')).join(''); $('color').value=h; $('hex').textContent=h.toUpperCase(); rememberColor(); }
+    b.onclick=()=>{ $('color').value=x; $('hex').textContent=x.toUpperCase(); if(tool==='recolor') rerunRecolor(); drawPreview(); }; $('recent').appendChild(b);} }
+function setColor(r,g,b){ const h='#'+[r,g,b].map(x=>x.toString(16).padStart(2,'0')).join(''); $('color').value=h; $('hex').textContent=h.toUpperCase(); rememberColor(); drawPreview(); }
 const hexRGB=h=>[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];
 
+/* ---------- pressure ---------- */
+const clamp01=v=>Math.min(1,Math.max(0,v));
+function curve(p){ const g=Math.pow(2,(5-(+$('penCurve').value))/2); return Math.pow(clamp01(p),g); }
+function radiusFor(p){ const base=Math.max(0.5,+$('size').value/2);
+  if(!$('penSize').checked || p>=1) return base; const mn=+$('penMin').value/100; return Math.max(0.5, base*(mn+(1-mn)*curve(p))); }
+function alphaFor(p){ if(!$('penAlpha').checked || p>=1) return 1; return 0.1+0.9*curve(p); }
+let lastPen=0, penSeen=false;
+function readPointer(e){
+  const pen=e.pointerType==='pen';
+  let p = pen ? e.pressure : 1;
+  if(pen && (e.buttons&1) && p<=0) p=0.05;
+  const eraser = pen && (e.button===5 || (e.buttons&32)===32);
+  if(pen){ lastPen=performance.now(); penUI(p, eraser); }
+  return {p, eraser, pen};
+}
+function penUI(p,eraser){
+  if(!penSeen){ penSeen=true; $('penType').classList.remove('off'); }
+  $('penType').textContent = eraser ? 'ยางลบปากกา' : 'ปากกา';
+  $('penMeter').style.width=Math.round(clamp01(p)*100)+'%'; $('penVal').textContent=Math.round(clamp01(p)*100)+'%';
+}
+const palmBlocked=e=> e.pointerType==='touch' && $('palm').checked && (performance.now()-lastPen<1500 || (stroke && stroke.pen));
+
+/* ---------- brush tips ---------- */
+// every tip draws white coverage into a mask; the mode decides what that coverage paints
+const noiseStamp=(()=>{ const c=document.createElement('canvas'); c.width=c.height=64; const x=c.getContext('2d');
+  for(let i=0;i<140;i++){ const r=1+Math.random()*7, a=Math.random()*Math.PI*2, d=Math.sqrt(Math.random())*26;
+    const g=x.createRadialGradient(32+Math.cos(a)*d,32+Math.sin(a)*d,0,32+Math.cos(a)*d,32+Math.sin(a)*d,r);
+    const al=0.15+Math.random()*0.35; g.addColorStop(0,`rgba(255,255,255,${al})`); g.addColorStop(1,'rgba(255,255,255,0)');
+    x.fillStyle=g; x.beginPath(); x.arc(32+Math.cos(a)*d,32+Math.sin(a)*d,r,0,Math.PI*2); x.fill(); }
+  x.globalCompositeOperation='destination-in'; const m=x.createRadialGradient(32,32,10,32,32,32); m.addColorStop(0,'#fff'); m.addColorStop(1,'rgba(255,255,255,0)'); x.fillStyle=m; x.fillRect(0,0,64,64);
+  return c; })();
+const SPACING={pen:0.22, soft:0.2, spray:0.5, grunge:0.35};
+function tipDab(ctx,kind,x,y,r,a,dir,hard){
+  ctx.globalAlpha=1;
+  if(kind==='pen'||kind==='soft'){
+    const h = kind==='soft'?0:hard, al = kind==='soft'? a*0.45 : a;
+    const g=ctx.createRadialGradient(x,y,0,x,y,r);
+    g.addColorStop(0,`rgba(255,255,255,${al})`); g.addColorStop(Math.min(0.99,h),`rgba(255,255,255,${al})`); g.addColorStop(1,'rgba(255,255,255,0)');
+    ctx.fillStyle=g; ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill();
+  } else if(kind==='pixel'){
+    const s=Math.max(1,Math.round(r*2)); ctx.fillStyle=`rgba(255,255,255,${a})`; ctx.fillRect(Math.round(x-s/2),Math.round(y-s/2),s,s);
+  } else if(kind==='spray'){
+    const n=Math.min(90,Math.max(3,Math.round(r*r*0.12))), ds=Math.max(0.6,r*0.07); ctx.fillStyle=`rgba(255,255,255,${a})`;
+    for(let i=0;i<n;i++){ const t=Math.random()*Math.PI*2, d=Math.sqrt(Math.random())*r; ctx.fillRect(x+Math.cos(t)*d-ds/2, y+Math.sin(t)*d-ds/2, ds, ds); }
+  } else if(kind==='grunge'){
+    ctx.save(); ctx.globalAlpha=a; ctx.translate(x,y); ctx.rotate(Math.random()*Math.PI*2); ctx.drawImage(noiseStamp,-r,-r,r*2,r*2); ctx.restore();
+  } else if(kind==='stitch'){
+    const len=r*0.95, w=Math.max(1,r*0.28), nx=-Math.sin(dir), ny=Math.cos(dir);
+    ctx.strokeStyle=`rgba(255,255,255,${a})`; ctx.lineWidth=w; ctx.lineCap='round';
+    ctx.beginPath(); ctx.moveTo(x-nx*len,y-ny*len); ctx.lineTo(x+nx*len,y+ny*len); ctx.stroke();
+  }
+}
+// lays dabs from point a to point b with interpolated radius/alpha; returns leftover distance for stitch spacing
+function tipPath(ctx,kind,A,B,join,hard,state){
+  if(!A||!join){ if(kind!=='stitch') tipDab(ctx,kind,B.x,B.y,B.r,B.a,0,hard); state.acc=0; return; }
+  const dx=B.x-A.x, dy=B.y-A.y, d=Math.hypot(dx,dy); if(d<0.01) return; const dir=Math.atan2(dy,dx);
+  if(kind==='stitch'){
+    const gap=Math.max(3,(A.r+B.r)*0.75); let pos=gap-(state.acc||0);
+    while(pos<=d){ const f=pos/d; tipDab(ctx,kind,A.x+dx*f,A.y+dy*f,A.r+(B.r-A.r)*f,A.a+(B.a-A.a)*f,dir,hard); pos+=gap; }
+    state.acc=d-(pos-gap); return;
+  }
+  const step = kind==='pixel' ? Math.max(0.5,Math.min(1,Math.min(A.r,B.r))) : Math.max(0.5,Math.min(A.r,B.r)*SPACING[kind]);
+  for(let s=step;s<d;s+=step){ const f=s/d; tipDab(ctx,kind,A.x+dx*f,A.y+dy*f,A.r+(B.r-A.r)*f,A.a+(B.a-A.a)*f,dir,hard); }
+  tipDab(ctx,kind,B.x,B.y,B.r,B.a,dir,hard);
+}
+
 /* ---------- painting ---------- */
-let stroke=null;
-function beginStroke(){ cancelAdjust(); lastRecolor=null; pushUndo(); bctx.clearRect(0,0,W,H); bctx.drawImage(tex,0,0); mctx.clearRect(0,0,W,H); stroke={last:null}; rememberColor(); }
-function dab(x,y){
-  const r=Math.max(0.5,+$('size').value/2), hard=+$('hardness').value/100;
-  const draw=(cx,cy)=>{ const g=mctx.createRadialGradient(cx,cy,0,cx,cy,r);
-    g.addColorStop(0,'rgba(255,255,255,1)'); g.addColorStop(Math.min(0.99,hard),'rgba(255,255,255,1)'); g.addColorStop(1,'rgba(255,255,255,0)');
-    mctx.fillStyle=g; mctx.beginPath(); mctx.arc(cx,cy,r,0,Math.PI*2); mctx.fill(); };
-  draw(x,y);
-  // wrap at texture edges so seams that tile still get paint
-  if(x<r) draw(x+W,y); if(x>W-r) draw(x-W,y); if(y<r) draw(x,y+H); if(y>H-r) draw(x,y-H);
+let stroke=null, lastPaint=null;
+const blurC=document.createElement('canvas'), blurX=blurC.getContext('2d');
+const patch=document.createElement('canvas'), px2=patch.getContext('2d');
+const canFilter=(()=>{ try{ const c=document.createElement('canvas').getContext('2d'); c.filter='blur(2px)'; return c.filter==='blur(2px)'; }catch(e){ return false; } })();
+function makeBlur(){
+  blurC.width=W; blurC.height=H; const r=Math.max(1,Math.min(8,+$('size').value/6));
+  if(canFilter){ blurX.filter=`blur(${r}px)`; blurX.drawImage(base,0,0); blurX.filter='none'; }
+  else { const s=document.createElement('canvas'), k=Math.max(2,Math.round(r*2)); s.width=Math.max(1,W/k|0); s.height=Math.max(1,H/k|0);
+    const sx=s.getContext('2d'); sx.imageSmoothingEnabled=true; sx.drawImage(base,0,0,s.width,s.height); blurX.imageSmoothingEnabled=true; blurX.drawImage(s,0,0,W,H); }
 }
-function strokeTo(x,y,allowJoin){
-  const last=stroke.last, r=Math.max(0.5,+$('size').value/2);
-  if(last && allowJoin){ const dx=x-last[0], dy=y-last[1], d=Math.hypot(dx,dy), step=Math.max(0.5,r*0.3);
-    for(let s=step;s<d;s+=step) dab(last[0]+dx*s/d,last[1]+dy*s/d); }
-  dab(x,y); stroke.last=[x,y]; compose();
+function beginStroke(over={}){
+  cancelAdjust(); lastRecolor=null; pushUndo();
+  stroke={ tool: over.tool||tool, mode: (over.tool||tool)==='eraser'?'normal':mode, tip, color:$('color').value, opacity:+$('opacity').value/100,
+    hard:+$('hardness').value/100, smooth:+$('smooth').value, pen:!!over.pen, last:null, sm:null, st:{acc:0} };
+  bctx.clearRect(0,0,W,H); bctx.drawImage(tex,0,0); mctx.clearRect(0,0,W,H);
+  if(stroke.mode==='blur') makeBlur();
+  if(stroke.tool==='brush' && stroke.mode!=='blur' && stroke.mode!=='smudge') rememberColor();
 }
+function wrapDab(fn,x,y,r){ fn(x,y); if(x<r) fn(x+W,y); if(x>W-r) fn(x-W,y); if(y<r) fn(x,y+H); if(y>H-r) fn(x,y-H); }
+function strokeTo(x,y,p,join){
+  const s=stroke; if(!s) return;
+  if(s.sm && join && s.smooth){ const k=1-s.smooth*0.085; x=s.sm.x+(x-s.sm.x)*k; y=s.sm.y+(y-s.sm.y)*k; }
+  s.sm={x,y};
+  const B={x,y,r:radiusFor(p),a:alphaFor(p)}, A=s.last;
+  if(s.mode==='smudge' && s.tool==='brush'){ smudgePath(A,B,join); s.last=B; return; }
+  const kind=s.tip;
+  if(kind==='stitch'||kind==='pixel') tipPath(mctx,kind,A,B,join,s.hard,s.st);
+  else { // repeat across the texture edge so tiling seams still get paint
+    const dxs=[0]; if(B.x<B.r*2) dxs.push(W); if(B.x>W-B.r*2) dxs.push(-W);
+    const dys=[0]; if(B.y<B.r*2) dys.push(H); if(B.y>H-B.r*2) dys.push(-H);
+    for(const ox of dxs) for(const oy of dys){ const sh=P=>P&&({...P,x:P.x+ox,y:P.y+oy}); tipPath(mctx,kind,sh(A),sh(B),join,s.hard,ox||oy?{acc:0}:s.st); }
+  }
+  s.last=B;
+}
+function smudgePath(A,B,join){
+  if(!A||!join) return;
+  const dx=B.x-A.x, dy=B.y-A.y, d=Math.hypot(dx,dy); if(d<0.01) return;
+  const step=Math.max(0.5,Math.min(A.r,B.r)*0.25); let px=A.x, py=A.y;
+  for(let s=step;s<=d+0.001;s+=step){ const f=Math.min(1,s/d), x=A.x+dx*f, y=A.y+dy*f, r=A.r+(B.r-A.r)*f, a=(A.a+(B.a-A.a)*f)*stroke.opacity;
+    const size=Math.max(2,Math.ceil(r*2)); patch.width=size; patch.height=size;
+    px2.clearRect(0,0,size,size); px2.drawImage(tex,px-r,py-r,size,size,0,0,size,size);
+    px2.globalCompositeOperation='destination-in'; const g=px2.createRadialGradient(size/2,size/2,0,size/2,size/2,size/2);
+    g.addColorStop(0,'rgba(0,0,0,1)'); g.addColorStop(0.5,'rgba(0,0,0,.8)'); g.addColorStop(1,'rgba(0,0,0,0)'); px2.fillStyle=g; px2.fillRect(0,0,size,size); px2.globalCompositeOperation='source-over';
+    tctx.globalAlpha=Math.min(1,a*0.9); tctx.drawImage(patch,x-r,y-r); tctx.globalAlpha=1; px=x; py=y; }
+  // keep the texture's own transparency
+  tctx.globalCompositeOperation='destination-in'; tctx.drawImage(base,0,0); tctx.globalCompositeOperation='source-over';
+}
+const OPS={normal:'source-over', tint:'color', shade:'multiply', light:'screen', blur:'source-over'};
 function compose(){
+  const s=stroke; if(!s) return;
+  if(s.mode==='smudge' && s.tool==='brush'){ changed(); return; }
   lctx.globalCompositeOperation='source-over'; lctx.globalAlpha=1; lctx.clearRect(0,0,W,H);
-  if(tool==='restore') lctx.drawImage(orig,0,0); else { lctx.fillStyle=$('color').value; lctx.fillRect(0,0,W,H); }
+  if(s.tool==='eraser') lctx.drawImage(orig,0,0);
+  else if(s.mode==='blur') lctx.drawImage(blurC,0,0);
+  else { lctx.fillStyle=s.color; lctx.fillRect(0,0,W,H); }
   lctx.globalCompositeOperation='destination-in'; lctx.drawImage(mask,0,0);
   tctx.globalCompositeOperation='copy'; tctx.globalAlpha=1; tctx.drawImage(base,0,0);
-  tctx.globalCompositeOperation= tool==='tint' ? 'color' : 'source-over';
-  tctx.globalAlpha=+$('opacity').value/100; tctx.drawImage(layer,0,0);
-  if(tool!=='restore'){ tctx.globalCompositeOperation='destination-in'; tctx.globalAlpha=1; tctx.drawImage(base,0,0); }
+  tctx.globalCompositeOperation= s.tool==='eraser' ? 'source-over' : (OPS[s.mode]||'source-over');
+  tctx.globalAlpha=s.opacity; tctx.drawImage(layer,0,0);
+  if(s.tool!=='eraser'){ tctx.globalCompositeOperation='destination-in'; tctx.globalAlpha=1; tctx.drawImage(base,0,0); }
   tctx.globalCompositeOperation='source-over'; tctx.globalAlpha=1;
   changed();
 }
-function endStroke(){ stroke=null; }
+function endStroke(){ if(stroke && stroke.last) lastPaint={x:stroke.last.x,y:stroke.last.y}; stroke=null; }
+
+/* ---------- brush preview (shows the pressure taper) ---------- */
+const pvMask=document.createElement('canvas'), pvX=pvMask.getContext('2d');
+function drawPreview(){
+  const c=$('brushPreview'); if(!c || c.closest('[hidden]')) return;
+  const w=c.clientWidth*2||480, h=c.height; if(c.width!==w) c.width=w;
+  pvMask.width=w; pvMask.height=h; pvX.clearRect(0,0,w,h);
+  const st={acc:0}, maxR=h*0.38, base=Math.max(0.5,+$('size').value/2), scale=Math.min(1,maxR/base);
+  let A=null; const n=90;
+  for(let i=0;i<=n;i++){ const t=i/n, x=16+t*(w-32), y=h/2+Math.sin(t*Math.PI*2)*h*0.16, p=Math.sin(Math.PI*t)*0.97+0.03;
+    const B={x,y,r:Math.max(0.5,radiusFor(p)*scale*1.6),a:alphaFor(p)}; tipPath(pvX,tip,A,B,!!A,+$('hardness').value/100,st); A=B; }
+  const x=c.getContext('2d'); x.clearRect(0,0,w,h);
+  x.globalAlpha=+$('opacity').value/100; x.fillStyle = tool==='eraser' ? cssVar('--muted') : $('color').value; x.fillRect(0,0,w,h);
+  x.globalCompositeOperation='destination-in'; x.globalAlpha=1; x.drawImage(pvMask,0,0); x.globalCompositeOperation='source-over';
+}
+function drawTipIcons(){
+  const col=cssVar('--fg')||'#222';
+  document.querySelectorAll('.tip canvas').forEach(c=>{ const k=c.parentElement.dataset.tip, x=c.getContext('2d');
+    pvMask.width=c.width; pvMask.height=c.height; pvX.clearRect(0,0,c.width,c.height); const st={acc:0}; let A=null;
+    for(let i=0;i<=40;i++){ const t=i/40, B={x:8+t*(c.width-16), y:c.height/2+Math.sin(t*Math.PI*2)*6, r: k==='pixel'?2.5:(k==='stitch'?7:4+Math.sin(Math.PI*t)*5), a:1};
+      tipPath(pvX,k,A,B,!!A,0.6,st); A=B; }
+    x.clearRect(0,0,c.width,c.height); x.fillStyle=col; x.fillRect(0,0,c.width,c.height); x.globalCompositeOperation='destination-in'; x.drawImage(pvMask,0,0); x.globalCompositeOperation='source-over'; });
+}
+
+/* ---------- UV islands (for the fill tool) ---------- */
+let islands=null;
+function buildIslands(uv){
+  const n=uv.length/6, parent=new Int32Array(n); for(let i=0;i<n;i++) parent[i]=i;
+  const find=i=>{ while(parent[i]!==i){ parent[i]=parent[parent[i]]; i=parent[i]; } return i; };
+  const seen=new Map();
+  for(let t=0;t<n;t++) for(let m=0;m<3;m++){ const k=Math.round(uv[t*6+m*2]*8192)+','+Math.round(uv[t*6+m*2+1]*8192);
+    if(seen.has(k)){ const a=find(t), b=find(seen.get(k)); if(a!==b) parent[a]=b; } else seen.set(k,t); }
+  const out=new Int32Array(n); for(let t=0;t<n;t++) out[t]=find(t); return out;
+}
+const wrapU=v=>((v%1)+1)%1;
+function islandAt(u,v){
+  if(!uvTris||!islands) return -1;
+  for(let t=0;t<uvTris.length/6;t++){ const k=t*6;
+    const ax=wrapU(uvTris[k]),ay=wrapU(uvTris[k+1]),bx=wrapU(uvTris[k+2]),by=wrapU(uvTris[k+3]),cx=wrapU(uvTris[k+4]),cy=wrapU(uvTris[k+5]);
+    const d=(by-cy)*(ax-cx)+(cx-bx)*(ay-cy); if(Math.abs(d)<1e-12) continue;
+    const l1=((by-cy)*(u-cx)+(cx-bx)*(v-cy))/d, l2=((cy-ay)*(u-cx)+(ax-cx)*(v-cy))/d, l3=1-l1-l2;
+    if(l1>=-1e-4&&l2>=-1e-4&&l3>=-1e-4) return islands[t]; }
+  return -1;
+}
+function fillAt(px,py,u,v){
+  const s=mode==='smudge'?'normal':mode;
+  if(fillBy==='island'){ const id=islandAt(u,v); if(id<0){ toast('จุดนี้ไม่อยู่บนชิ้นส่วนไหนของโมเดล'); return; }
+    const saved=mode; mode=s; beginStroke(); mode=saved;
+    mctx.fillStyle='#fff'; mctx.strokeStyle='#fff'; mctx.lineWidth=1.5; mctx.lineJoin='round';
+    for(let t=0;t<islands.length;t++){ if(islands[t]!==id) continue; const k=t*6; mctx.beginPath();
+      mctx.moveTo(wrapU(uvTris[k])*W,(1-wrapU(uvTris[k+1]))*H); mctx.lineTo(wrapU(uvTris[k+2])*W,(1-wrapU(uvTris[k+3]))*H); mctx.lineTo(wrapU(uvTris[k+4])*W,(1-wrapU(uvTris[k+5]))*H);
+      mctx.closePath(); mctx.fill(); mctx.stroke(); }
+  } else {
+    const saved=mode; mode=s; beginStroke(); mode=saved;
+    const src=bctx.getImageData(0,0,W,H).data, w=colorWeights(src,px,py,+$('fillTol').value/100,true), id=mctx.createImageData(W,H), d=id.data;
+    for(let k=0;k<w.length;k++){ if(!w[k]) continue; const j=k*4; d[j]=d[j+1]=d[j+2]=255; d[j+3]=Math.round(w[k]*255); }
+    mctx.putImageData(id,0,0);
+  }
+  compose(); endStroke(); lastPaint=null;
+}
 
 /* ---------- colour maths ---------- */
 function rgb2hsv(r,g,b){ r/=255; g/=255; b/=255; const mx=Math.max(r,g,b), mn=Math.min(r,g,b), d=mx-mn; let h=0;
@@ -433,26 +677,29 @@ function recolorAt(px,py){
   lastRecolor={snap:undo[undo.length-1], x:px, y:py}; runRecolor();
 }
 function rerunRecolor(){ if(lastRecolor) runRecolor(); }
-function runRecolor(){
-  const {snap,x,y}=lastRecolor, src=snap.data, out=new ImageData(new Uint8ClampedArray(src),W,H), d=out.data;
+function colorWeights(src,x,y,tol,contig){
   const i0=(y*W+x)*4; const [sh,ss,sv]=rgb2hsv(src[i0],src[i0+1],src[i0+2]);
-  const [th,ts,tv]=rgb2hsv(...hexRGB($('color').value));
-  const tol=+$('tol').value/100, keep=$('keepShade').checked;
   const n=W*H, wgt=new Float32Array(n);
   for(let k=0;k<n;k++){ const j=k*4; if(src[j+3]<8) continue;
     const [h,s,v]=rgb2hsv(src[j],src[j+1],src[j+2]);
     let dh=Math.abs(h-sh); if(dh>180) dh=360-dh;
     const chroma=Math.min(1,(Math.min(s,ss))*2.2);
     const dist=Math.hypot(dh/180*chroma*1.6, (s-ss)*0.9, (v-sv)*0.55);
-    const w = dist<=tol*0.65 ? 1 : dist>=tol ? 0 : 1-(dist-tol*0.65)/(tol*0.35);
-    wgt[k]=w; }
-  if($('contig').checked){ // flood from the clicked pixel through pixels that matched at all
+    wgt[k] = dist<=tol*0.65 ? 1 : dist>=tol ? 0 : 1-(dist-tol*0.65)/(tol*0.35); }
+  if(contig){ // flood from the clicked pixel through pixels that matched at all
     const keepMask=new Uint8Array(n), st=[y*W+x]; keepMask[y*W+x]=1;
     while(st.length){ const k=st.pop(), cx=k%W, cy=(k-cx)/W;
       for(const [nx,ny] of [[cx+1,cy],[cx-1,cy],[cx,cy+1],[cx,cy-1]]){ if(nx<0||ny<0||nx>=W||ny>=H) continue; const m=ny*W+nx; if(!keepMask[m] && wgt[m]>0.05){ keepMask[m]=1; st.push(m);} } }
     for(let k=0;k<n;k++) if(!keepMask[k]) wgt[k]=0;
   }
-  for(let k=0;k<n;k++){ const w=wgt[k]; if(!w) continue; const j=k*4;
+  return wgt;
+}
+function runRecolor(){
+  const {snap,x,y}=lastRecolor, src=snap.data, out=new ImageData(new Uint8ClampedArray(src),W,H), d=out.data;
+  const i0=(y*W+x)*4; const [sh,ss,sv]=rgb2hsv(src[i0],src[i0+1],src[i0+2]);
+  const [th,ts,tv]=rgb2hsv(...hexRGB($('color').value));
+  const keep=$('keepShade').checked, wgt=colorWeights(src,x,y,+$('tol').value/100,$('contig').checked);
+  for(let k=0;k<wgt.length;k++){ const w=wgt[k]; if(!w) continue; const j=k*4;
     const [h,s,v]=rgb2hsv(src[j],src[j+1],src[j+2]);
     let nr,ng,nb;
     if(keep){ const ns=Math.min(1,Math.max(0,s+(ts-ss))), nv=Math.min(1,Math.max(0,v+(tv-sv))); [nr,ng,nb]=hsv2rgb(th,ns,nv); }
@@ -485,14 +732,22 @@ $('resetAll').onclick=()=>{ if(Date.now()-resetArmed>3000){ resetArmed=Date.now(
 
 /* ---------- shared pointer actions ---------- */
 function pickAt(px,py){ const d=tctx.getImageData(px,py,1,1).data; setColor(d[0],d[1],d[2]); toast('ดูดสี '+$('color').value.toUpperCase()); }
-function actAt(u,v,isStart,allowJoin){
-  const x=((u%1)+1)%1*W, y=(1-(((v%1)+1)%1))*H;
-  const px=Math.min(W-1,Math.max(0,Math.floor(x))), py=Math.min(H-1,Math.max(0,Math.floor(y)));
-  if(tool==='picker'){ if(isStart) pickAt(px,py); return; }
-  if(tool==='recolor'){ if(isStart) recolorAt(px,py); return; }
-  if(isStart) beginStroke();
-  if(stroke) strokeTo(x,y,allowJoin);
+const toPx=(u,v)=>{ const x=wrapU(u)*W, y=(1-wrapU(v))*H; return [x,y,Math.min(W-1,Math.max(0,Math.floor(x))),Math.min(H-1,Math.max(0,Math.floor(y)))]; };
+// start an action at texture uv; returns true when a paint stroke is now running
+function actStart(u,v,info,e){
+  const [x,y,px,py]=toPx(u,v);
+  const t = info.eraser ? 'eraser' : (e.altKey && PAINTS.includes(tool) ? 'picker' : tool);
+  if(t==='picker'){ pickAt(px,py); return false; }
+  if(t==='recolor'){ recolorAt(px,py); return false; }
+  if(t==='fill'){ fillAt(px,py,wrapU(u),wrapU(v)); return false; }
+  if(!PAINTS.includes(t)) return false;
+  beginStroke({tool:t, pen:info.pen});
+  if(e.shiftKey && lastPaint){ stroke.last={x:lastPaint.x,y:lastPaint.y,r:radiusFor(info.p),a:alphaFor(info.p)}; stroke.sm={...lastPaint}; strokeTo(x,y,info.p,true); }
+  else strokeTo(x,y,info.p,false);
+  compose(); return true;
 }
+const samples=e=> (e.getCoalescedEvents && e.getCoalescedEvents().length) ? e.getCoalescedEvents() : [e];
+let altTip=false; addEventListener('keydown',e=>{ if(e.key==='Alt'&&PAINTS.includes(tool)){ altTip=true; need2d=true; } }); addEventListener('keyup',e=>{ if(e.key==='Alt'){ altTip=false; need2d=true; } });
 
 /* ---------- 3D pointer ---------- */
 const ray=new THREE.Raycaster(), ndc=new THREE.Vector2();
@@ -502,18 +757,26 @@ function hit3d(e){ if(!mesh) return null; const r=c3d.getBoundingClientRect();
 const ptrs3=new Map(); let drag3=null, pinch=null;
 c3d.addEventListener('contextmenu',e=>e.preventDefault());
 c3d.addEventListener('pointerdown',e=>{
-  c3d.setPointerCapture(e.pointerId); ptrs3.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(palmBlocked(e)) return;
+  const info=readPointer(e);
+  try{ c3d.setPointerCapture(e.pointerId); }catch(err){} ptrs3.set(e.pointerId,{x:e.clientX,y:e.clientY});
   if(ptrs3.size===2){ if(stroke) endStroke(); drag3=null; const [a,b]=[...ptrs3.values()]; pinch={d:Math.hypot(a.x-b.x,a.y-b.y), r:orbit.r}; return; }
-  const h = (e.button===0 && tool!=='view') ? hit3d(e) : null;
-  if(h){ drag3={mode:'act', uv:h.uv.clone()}; actAt(h.uv.x,h.uv.y,true,false); }
+  const primary = e.button===0 || info.eraser;
+  const h = (primary && (tool!=='view'||info.eraser)) ? hit3d(e) : null;
+  if(h){ const painting=actStart(h.uv.x,h.uv.y,info,e); drag3= painting ? {mode:'act', uv:h.uv.clone()} : {mode:'none'}; }
   else drag3={mode: e.button===2||e.button===1||e.shiftKey ? 'pan' : 'orbit', x:e.clientX, y:e.clientY};
 });
 c3d.addEventListener('pointermove',e=>{
+  if(e.pointerType==='pen') readPointer(e);
   if(ptrs3.has(e.pointerId)) ptrs3.set(e.pointerId,{x:e.clientX,y:e.clientY});
   if(pinch && ptrs3.size===2){ const [a,b]=[...ptrs3.values()]; const d=Math.hypot(a.x-b.x,a.y-b.y); orbit.r=Math.max(orbit.r0*0.05,pinch.r*pinch.d/d); placeCam(); return; }
-  if(!drag3) return;
-  if(drag3.mode==='act'){ if(tool==='picker'||tool==='recolor') return; const h=hit3d(e); if(!h) { stroke&&(stroke.last=null); return; }
-    const join=drag3.uv && Math.hypot(h.uv.x-drag3.uv.x,h.uv.y-drag3.uv.y)<0.06; drag3.uv=h.uv.clone(); actAt(h.uv.x,h.uv.y,false,join); return; }
+  if(!drag3 || drag3.mode==='none') return;
+  if(drag3.mode==='act'){
+    const evs=samples(e), list=evs.length>8 ? evs.filter((_,i)=>i%Math.ceil(evs.length/8)===0||i===evs.length-1) : evs;
+    for(const ev of list){ const h=hit3d(ev); if(!h){ if(stroke){ stroke.last=null; stroke.sm=null; } drag3.uv=null; continue; }
+      const join=drag3.uv && Math.hypot(h.uv.x-drag3.uv.x,h.uv.y-drag3.uv.y)<0.06; drag3.uv=h.uv.clone();
+      const [x,y]=toPx(h.uv.x,h.uv.y); strokeTo(x,y,readPointer(ev).p,!!join); }
+    compose(); return; }
   const dx=e.clientX-drag3.x, dy=e.clientY-drag3.y; drag3.x=e.clientX; drag3.y=e.clientY;
   if(drag3.mode==='orbit'){ orbit.theta-=dx*0.008; orbit.phi=Math.min(3.1,Math.max(0.05,orbit.phi-dy*0.008)); }
   else { const s=orbit.r*0.0016; const right=new THREE.Vector3().setFromMatrixColumn(camera.matrix,0), up=new THREE.Vector3().setFromMatrixColumn(camera.matrix,1);
@@ -526,27 +789,30 @@ c3d.addEventListener('wheel',e=>{ e.preventDefault(); orbit.r=Math.max(orbit.r0*
 $('resetCam').onclick=resetCam;
 
 /* ---------- 2D view ---------- */
-const c2d=$('c2d'), v2=c2d.getContext('2d'); const view={s:1,ox:0,oy:0}; let cursor2=null;
+const c2d=$('c2d'), v2=c2d.getContext('2d'); const view={s:1,ox:0,oy:0}; let cursor2=null, cursorP=1;
 function fit2d(){ const r=c2d.getBoundingClientRect(); const s=Math.min((r.width-24)/W,(r.height-24)/H); view.s=Math.max(0.05,s); view.ox=(r.width-W*view.s)/2; view.oy=(r.height-H*view.s)/2; need2d=true; }
 $('fit2d').onclick=()=>{ userView=false; fit2d(); };
 function toTex(e){ const r=c2d.getBoundingClientRect(); return [(e.clientX-r.left-view.ox)/view.s, (e.clientY-r.top-view.oy)/view.s]; }
 let drag2=null; c2d.addEventListener('contextmenu',e=>e.preventDefault());
 const ptrs2=new Map(); let pinch2=null;
 c2d.addEventListener('pointerdown',e=>{
-  c2d.setPointerCapture(e.pointerId); ptrs2.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(palmBlocked(e)) return;
+  const info=readPointer(e);
+  try{ c2d.setPointerCapture(e.pointerId); }catch(err){} ptrs2.set(e.pointerId,{x:e.clientX,y:e.clientY});
   if(ptrs2.size===2){ if(stroke) endStroke(); drag2=null; const [a,b]=[...ptrs2.values()]; pinch2={d:Math.hypot(a.x-b.x,a.y-b.y), s:view.s}; return; }
   const [x,y]=toTex(e);
-  const inside = x>=0&&y>=0&&x<W&&y<H;
-  if(e.button===0 && tool!=='view' && inside){ drag2={mode:'act'}; actAt(x/W,1-y/H,true,false); }
+  const inside = x>=0&&y>=0&&x<W&&y<H, primary = e.button===0 || info.eraser;
+  if(primary && (tool!=='view'||info.eraser) && inside){ const painting=actStart(x/W,1-y/H,info,e); drag2= painting?{mode:'act'}:{mode:'none'}; }
   else drag2={mode:'pan',x:e.clientX,y:e.clientY};
 });
 c2d.addEventListener('pointermove',e=>{
+  const info = e.pointerType==='pen' ? readPointer(e) : null;
   if(ptrs2.has(e.pointerId)) ptrs2.set(e.pointerId,{x:e.clientX,y:e.clientY});
-  const [x,y]=toTex(e); cursor2=[x,y]; need2d=true;
+  const [x,y]=toTex(e); cursor2=[x,y]; cursorP = info && (e.buttons&1) ? info.p : 1; need2d=true;
   $('foot2d').textContent = (x>=0&&y>=0&&x<W&&y<H) ? `${W}×${H} · x ${Math.floor(x)} y ${Math.floor(y)}` : `${W}×${H}`;
   if(pinch2 && ptrs2.size===2){ const [a,b]=[...ptrs2.values()]; const d=Math.hypot(a.x-b.x,a.y-b.y); zoom2At(pinch2.s*d/pinch2.d/view.s, (a.x+b.x)/2,(a.y+b.y)/2); return; }
-  if(!drag2) return;
-  if(drag2.mode==='act'){ if(tool==='picker'||tool==='recolor') return; actAt(x/W,1-y/H,false,true); return; }
+  if(!drag2 || drag2.mode==='none') return;
+  if(drag2.mode==='act'){ for(const ev of samples(e)){ const [sx,sy]=toTex(ev); strokeTo(sx,sy,readPointer(ev).p,true); } compose(); return; }
   userView=true; view.ox+=e.clientX-drag2.x; view.oy+=e.clientY-drag2.y; drag2.x=e.clientX; drag2.y=e.clientY; need2d=true;
 });
 const end2=e=>{ ptrs2.delete(e.pointerId); if(ptrs2.size<2) pinch2=null; if(drag2&&drag2.mode==='act') endStroke(); drag2=null; };
@@ -573,9 +839,14 @@ function draw2d(){
         v2.lineTo(view.ox+(((uvTris[b]%1)+1)%1)*W*view.s, view.oy+(1-(((uvTris[b+1]%1)+1)%1))*H*view.s); } }
     v2.stroke(); v2.globalAlpha=1;
   }
-  if(cursor2 && ['brush','tint','restore'].includes(tool)){
-    const rr=Math.max(1,+$('size').value/2*view.s); v2.strokeStyle=cssVar('--fg'); v2.lineWidth=1;
-    v2.beginPath(); v2.arc(view.ox+cursor2[0]*view.s, view.oy+cursor2[1]*view.s, rr,0,Math.PI*2); v2.stroke();
+  if(cursor2){
+    const cx=view.ox+cursor2[0]*view.s, cy=view.oy+cursor2[1]*view.s;
+    v2.strokeStyle=cssVar('--fg'); v2.lineWidth=1;
+    if(PAINTS.includes(tool) && !altTip){
+      const rr=Math.max(1,(stroke&&stroke.last?stroke.last.r:radiusFor(cursorP))*view.s);
+      v2.beginPath(); if(tip==='pixel'){ const s=Math.max(1,Math.round(rr*2/view.s))*view.s; v2.rect(cx-s/2,cy-s/2,s,s); } else v2.arc(cx,cy,rr,0,Math.PI*2); v2.stroke();
+      v2.globalAlpha=0.5; v2.beginPath(); v2.arc(cx,cy,Math.max(1,+$('size').value/2*view.s),0,Math.PI*2); v2.setLineDash([3,3]); v2.stroke(); v2.setLineDash([]); v2.globalAlpha=1;
+    } else if(tool!=='view'){ v2.beginPath(); v2.moveTo(cx-7,cy); v2.lineTo(cx+7,cy); v2.moveTo(cx,cy-7); v2.lineTo(cx,cy+7); v2.stroke(); }
   }
 }
 
@@ -585,7 +856,8 @@ function changed(){ texDirty=true; need2d=true; }
 function size3d(){ const r=c3d.getBoundingClientRect(); renderer.setSize(r.width,r.height,false); camera.aspect=r.width/Math.max(1,r.height); camera.updateProjectionMatrix(); need3d=true; }
 function setBg(){ const v=$('bgSel').value; renderer.setClearColor(new THREE.Color(v==='theme'?cssVar('--stage'):v)); need3d=true; }
 $('bgSel').onchange=setBg;
-matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{ setBg(); need2d=true; });
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{ setBg(); need2d=true; drawTipIcons(); });
+new ResizeObserver(()=>drawPreview()).observe($('brushPreview'));
 new MutationObserver(()=>{ setBg(); need2d=true; }).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
 $('flatToggle').onchange=()=>{ if(mesh) mesh.material=$('flatToggle').checked?flatMat:litMat; need3d=true; };
 $('wireToggle').onchange=()=>{ if(wire) wire.visible=$('wireToggle').checked; need3d=true; };
@@ -621,9 +893,11 @@ addEventListener('keydown',e=>{
   const k=e.key.toLowerCase();
   if((e.ctrlKey||e.metaKey)&&k==='z'){ e.preventDefault(); e.shiftKey?doRedo():doUndo(); return; }
   if((e.ctrlKey||e.metaKey)&&k==='y'){ e.preventDefault(); doRedo(); return; }
-  const map={b:'brush',t:'tint',e:'restore',r:'recolor',i:'picker',v:'view'}; if(map[k]&&!e.ctrlKey&&!e.metaKey) setTool(map[k]);
-  if(k==='['){ $('size').value=Math.max(1,+$('size').value-2); $('size').dispatchEvent(new Event('input')); need2d=true; }
-  if(k===']'){ $('size').value=Math.min(120,+$('size').value+2); $('size').dispatchEvent(new Event('input')); need2d=true; }
+  if(e.ctrlKey||e.metaKey||e.altKey) return;
+  const map={b:'brush',e:'eraser',g:'fill',r:'recolor',i:'picker',v:'view'}; if(map[k]) setTool(map[k]);
+  if(k==='t'){ setTool('brush'); setMode('tint'); }
+  const tips=['pen','soft','pixel','spray','grunge','stitch']; if(/^[1-6]$/.test(k) && PAINTS.includes(tool)) setTip(tips[+k-1]);
+  if(k==='['||k===']'){ const v=+$('size').value, st=v<10?1:v<40?2:5; $('size').value=Math.min(120,Math.max(1,v+(k===']'?st:-st))); $('size').dispatchEvent(new Event('input')); }
 });
 $('undoBtn').onclick=doUndo; $('redoBtn').onclick=doRedo;
 
@@ -955,7 +1229,7 @@ function sampleTexture(){
 
 /* ---------- boot with the sample ---------- */
 (async()=>{
-  setTool('brush'); rememberColor(); size3d(); setBg();
+  setTip('pen'); setMode('normal'); setFillBy('island'); setTool('brush'); rememberColor(); size3d(); setBg(); drawTipIcons(); drawPreview();
   try{
     setModel(sampleOBJ());
     const img=await loadImage(sampleTexture());
