@@ -62,10 +62,22 @@ select{font:inherit;font-size:13px;border:1px solid var(--line);background:var(-
 .pane .tag{position:absolute;left:10px;top:8px;font-size:11px;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);font-weight:600;pointer-events:none}
 .pane .corner{position:absolute;right:8px;top:6px;display:flex;gap:6px}
 .pane .corner .btn{padding:3px 9px;font-size:12px}
-.pane .foot{position:absolute;left:10px;bottom:8px;font-family:var(--font-mono);font-size:11px;color:var(--muted);pointer-events:none}
+.pane .foot{position:absolute;left:10px;top:26px;font-family:var(--font-mono);font-size:11px;color:var(--muted);pointer-events:none}
 .drop{position:fixed;inset:0;display:grid;place-items:center;background:color-mix(in srgb,var(--bg) 82%,transparent);border:3px dashed var(--accent);font-family:var(--font-display);font-size:22px;z-index:20}
 .toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:8px 14px;border-radius:8px;font-size:13px;z-index:30;max-width:calc(100% - 32px)}
 .adjust{border-top:1px solid var(--line);padding-top:12px}
+.navbar{position:absolute;left:8px;right:8px;margin:0 auto;width:max-content;bottom:calc(8px + env(safe-area-inset-bottom,0px));display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:2px;
+  background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:4px;box-shadow:0 4px 16px rgba(0,0,0,.12);max-width:calc(100% - 16px)}
+.navbar button{font:inherit;font-size:14px;min-width:38px;height:38px;border:1px solid transparent;background:transparent;color:var(--fg);border-radius:9px;cursor:pointer;padding:0 9px;touch-action:manipulation}
+.navbar button:hover{background:var(--chip)}
+.navbar button:disabled{opacity:.35;cursor:default;background:transparent}
+.navbar button[aria-pressed="true"]{background:var(--accent);color:var(--accent-fg);font-weight:600}
+.navbar button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.navbar .sep{width:1px;height:24px;background:var(--line);margin:0 3px}
+@media (max-width:520px){.navbar button{min-width:32px;height:32px;padding:0 6px;font-size:13px}.navbar .sep{margin:0 1px}.navbar output{min-width:38px}}
+.navbar output{font-family:var(--font-mono);font-size:12px;min-width:46px;text-align:center;font-variant-numeric:tabular-nums}
+.pane.nav canvas{cursor:grab}
+.pane.nav canvas:active{cursor:grabbing}
 .tips{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
 .tip{font:inherit;font-size:11.5px;border:1px solid var(--line);background:var(--chip);color:var(--fg);border-radius:8px;padding:4px 2px 5px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
 .tip canvas{width:46px;height:20px;display:block}
@@ -237,7 +249,9 @@ select{font:inherit;font-size:13px;border:1px solid var(--line);background:var(-
       <div class="row"><label for="penMin">ขนาดตอนกดเบา</label><input type="range" id="penMin" min="5" max="100" value="20"><output id="penMinOut">20%</output></div>
       <div class="row"><label for="penCurve">ความไวแรงกด</label><input type="range" id="penCurve" min="1" max="9" value="5"><output id="penCurveOut">ปกติ</output></div>
       <label class="check"><input type="checkbox" id="palm" checked> ไม่รับนิ้วหรือฝ่ามือขณะใช้ปากกา</label>
-      <p class="hint">ปลายยางลบของปากกาใช้เป็นยางลบได้ทันที · ปุ่มข้างปากกาลากเพื่อเลื่อนภาพ · บน Windows ถ้าแรงกดไม่ขึ้น ให้เปิด Windows Ink ในโปรแกรมตั้งค่าปากกา</p>
+      <div class="row"><label for="barrel">ปุ่มข้างปากกา</label>
+        <select id="barrel"><option value="nav">เลื่อน / หมุนมุมมอง</option><option value="picker">ดูดสี</option><option value="eraser">ยางลบ</option><option value="undo">ย้อนกลับ</option></select></div>
+      <p class="hint">ซูมและเลื่อนภาพได้จากแถบปุ่มใต้ภาพ · ปลายยางลบของปากกาใช้ลบได้ทันที · บนแท็บเล็ตแตะสองนิ้วเพื่อย้อนกลับ · บน Windows ถ้าแรงกดไม่ขึ้น ให้เปิด Windows Ink ในโปรแกรมตั้งค่าปากกา</p>
     </div>
 
     <div class="group adjust">
@@ -262,15 +276,35 @@ select{font:inherit;font-size:13px;border:1px solid var(--line);background:var(-
   <section class="pane" id="pane3d">
     <canvas id="c3d" aria-label="ตัวอย่างโมเดล 3 มิติ"></canvas>
     <span class="tag">โมเดล 3D</span>
-    <div class="corner"><button class="btn" id="resetCam">รีเซ็ตกล้อง</button></div>
-    <span class="foot">ลากที่ว่าง = หมุน · คลิกขวาลาก = เลื่อน · ล้อเมาส์ = ซูม</span>
+    <span class="foot">ลากที่ว่าง = หมุน · ล้อเมาส์ = ซูม · ค้าง Space = หมุน</span>
+    <div class="navbar" role="toolbar" aria-label="ควบคุมมุมมอง 3D">
+      <button data-act="undo" title="ย้อนกลับ (Ctrl+Z)" aria-label="ย้อนกลับ">↶</button>
+      <button data-act="redo" title="ทำซ้ำ (Ctrl+Y)" aria-label="ทำซ้ำ">↷</button>
+      <span class="sep"></span>
+      <button data-act="out3" title="ซูมออก" aria-label="ซูมออก">−</button>
+      <button data-act="in3" title="ซูมเข้า" aria-label="ซูมเข้า">+</button>
+      <button id="resetCam" title="กลับมุมกล้องเริ่มต้น">รีเซ็ต</button>
+      <span class="sep"></span>
+      <button id="nav3orbit" aria-pressed="false" title="ลากเพื่อหมุนโมเดล ไม่ระบาย">หมุน</button>
+      <button id="nav3pan" aria-pressed="false" title="ลากเพื่อเลื่อนมุมมอง ไม่ระบาย">เลื่อน</button>
+    </div>
   </section>
 
   <section class="pane" id="pane2d">
     <canvas id="c2d" aria-label="ภาพพื้นผิว (texture)"></canvas>
     <span class="tag">ภาพ PNG</span>
-    <div class="corner"><button class="btn" id="fit2d">พอดีจอ</button></div>
     <span class="foot" id="foot2d"></span>
+    <div class="navbar" role="toolbar" aria-label="ควบคุมภาพ PNG">
+      <button data-act="undo" title="ย้อนกลับ (Ctrl+Z)" aria-label="ย้อนกลับ">↶</button>
+      <button data-act="redo" title="ทำซ้ำ (Ctrl+Y)" aria-label="ทำซ้ำ">↷</button>
+      <span class="sep"></span>
+      <button data-act="out2" title="ซูมออก" aria-label="ซูมออก">−</button>
+      <output id="zoom2" title="ระดับซูม">100%</output>
+      <button data-act="in2" title="ซูมเข้า" aria-label="ซูมเข้า">+</button>
+      <button id="fit2d" title="ให้ภาพพอดีกรอบ">พอดี</button>
+      <span class="sep"></span>
+      <button id="nav2pan" aria-pressed="false" title="ลากเพื่อเลื่อนภาพ ไม่ระบาย">เลื่อน</button>
+    </div>
   </section>
 </main>
 
@@ -330,7 +364,8 @@ let undo = [], redo = [];
 function snapshot(){ return tctx.getImageData(0,0,W,H); }
 let dirty=false;
 function pushUndo(){ undo.push(snapshot()); if (undo.length>40) undo.shift(); redo.length=0; dirty=true; updUndo(); }
-function updUndo(){ $('undoBtn').disabled=!undo.length; $('redoBtn').disabled=!redo.length; }
+function updUndo(){ $('undoBtn').disabled=!undo.length; $('redoBtn').disabled=!redo.length;
+  document.querySelectorAll('.navbar [data-act=undo]').forEach(b=>b.disabled=!undo.length); document.querySelectorAll('.navbar [data-act=redo]').forEach(b=>b.disabled=!redo.length); }
 function doUndo(){ if(!undo.length) return; cancelAdjust(); lastRecolor=null; redo.push(snapshot()); tctx.putImageData(undo.pop(),0,0); dirty=true; changed(); updUndo(); }
 function doRedo(){ if(!redo.length) return; cancelAdjust(); lastRecolor=null; undo.push(snapshot()); tctx.putImageData(redo.pop(),0,0); dirty=true; changed(); updUndo(); }
 
@@ -482,15 +517,26 @@ function readPointer(e){
   const pen=e.pointerType==='pen';
   let p = pen ? e.pressure : 1;
   if(pen && (e.buttons&1) && p<=0) p=0.05;
-  const eraser = pen && (e.button===5 || (e.buttons&32)===32);
+  let eraser = pen && (e.button===5 || (e.buttons&32)===32);
+  const barrel = pen && !eraser && (e.button===2 || (e.buttons&2)===2);
   if(pen){ lastPen=performance.now(); penUI(p, eraser); }
-  return {p, eraser, pen};
+  return {p, eraser, pen, barrel};
 }
 function penUI(p,eraser){
   if(!penSeen){ penSeen=true; $('penType').classList.remove('off'); }
   $('penType').textContent = eraser ? 'ยางลบปากกา' : 'ปากกา';
   $('penMeter').style.width=Math.round(clamp01(p)*100)+'%'; $('penVal').textContent=Math.round(clamp01(p)*100)+'%';
 }
+const PEN_KEYS=['penSize','penAlpha','penMin','penCurve','palm','barrel'];
+function savePen(){ try{ const o={}; for(const k of PEN_KEYS){ const el=$(k); o[k]= el.type==='checkbox'?el.checked:el.value; } localStorage.setItem('sp-pen',JSON.stringify(o)); }catch(e){} }
+function loadPen(){ try{ const o=JSON.parse(localStorage.getItem('sp-pen')||'null'); if(!o) return; for(const k of PEN_KEYS){ if(!(k in o)) continue; const el=$(k); if(el.type==='checkbox') el.checked=!!o[k]; else el.value=o[k]; el.dispatchEvent(new Event('input')); } }catch(e){} }
+PEN_KEYS.forEach(k=>$(k).addEventListener('change',savePen));
+// navigation latches for pen users (no wheel / right button needed)
+let nav2=false, nav3=null, spaceDown=false;
+function setNav2(on){ nav2=on; $('nav2pan').setAttribute('aria-pressed',on); $('pane2d').classList.toggle('nav',on||spaceDown); }
+function setNav3(m){ nav3= nav3===m ? null : m; $('nav3orbit').setAttribute('aria-pressed',nav3==='orbit'); $('nav3pan').setAttribute('aria-pressed',nav3==='pan'); $('pane3d').classList.toggle('nav',!!nav3||spaceDown); }
+// two-finger tap = undo (tablets)
+function twoTap(map,state){ if(map.size===2){ state.t=performance.now(); state.moved=false; } }
 const palmBlocked=e=> e.pointerType==='touch' && $('palm').checked && (performance.now()-lastPen<1500 || (stroke && stroke.pen));
 
 /* ---------- brush tips ---------- */
@@ -747,7 +793,7 @@ function actStart(u,v,info,e){
   compose(); return true;
 }
 const samples=e=> (e.getCoalescedEvents && e.getCoalescedEvents().length) ? e.getCoalescedEvents() : [e];
-let altTip=false; addEventListener('keydown',e=>{ if(e.key==='Alt'&&PAINTS.includes(tool)){ altTip=true; need2d=true; } }); addEventListener('keyup',e=>{ if(e.key==='Alt'){ altTip=false; need2d=true; } });
+let altTip=false; addEventListener('keydown',e=>{ if((e.key==='Alt'||e.code==='AltLeft'||e.code==='AltRight')&&PAINTS.includes(tool)){ altTip=true; need2d=true; } }); addEventListener('keyup',e=>{ if(e.key==='Alt'){ altTip=false; need2d=true; } });
 
 /* ---------- 3D pointer ---------- */
 const ray=new THREE.Raycaster(), ndc=new THREE.Vector2();
@@ -760,16 +806,22 @@ c3d.addEventListener('pointerdown',e=>{
   if(palmBlocked(e)) return;
   const info=readPointer(e);
   try{ c3d.setPointerCapture(e.pointerId); }catch(err){} ptrs3.set(e.pointerId,{x:e.clientX,y:e.clientY});
-  if(ptrs3.size===2){ if(stroke) endStroke(); drag3=null; const [a,b]=[...ptrs3.values()]; pinch={d:Math.hypot(a.x-b.x,a.y-b.y), r:orbit.r}; return; }
+  if(ptrs3.size===2){ if(stroke){ endStroke(); doUndo(); redo.length=0; updUndo(); } drag3=null; const [a,b]=[...ptrs3.values()]; pinch={d:Math.hypot(a.x-b.x,a.y-b.y), r:orbit.r}; twoTap(ptrs3,tap3); return; }
+  if(info.barrel){ const b=$('barrel').value;
+    if(b==='undo'){ doUndo(); drag3={mode:'none'}; return; }
+    if(b==='picker'){ const h=hit3d(e); if(h){ const [,,px,py]=toPx(h.uv.x,h.uv.y); pickAt(px,py); } drag3={mode:'none'}; return; }
+    if(b==='eraser') info.eraser=true;
+    else { drag3={mode:'orbit', x:e.clientX, y:e.clientY}; return; } }
+  const navNow = !!nav3 || spaceDown;
   const primary = e.button===0 || info.eraser;
-  const h = (primary && (tool!=='view'||info.eraser)) ? hit3d(e) : null;
+  const h = (primary && !navNow && (tool!=='view'||info.eraser)) ? hit3d(e) : null;
   if(h){ const painting=actStart(h.uv.x,h.uv.y,info,e); drag3= painting ? {mode:'act', uv:h.uv.clone()} : {mode:'none'}; }
-  else drag3={mode: e.button===2||e.button===1||e.shiftKey ? 'pan' : 'orbit', x:e.clientX, y:e.clientY};
+  else drag3={mode: nav3==='pan'||e.button===2||e.button===1||e.shiftKey ? 'pan' : 'orbit', x:e.clientX, y:e.clientY};
 });
 c3d.addEventListener('pointermove',e=>{
   if(e.pointerType==='pen') readPointer(e);
   if(ptrs3.has(e.pointerId)) ptrs3.set(e.pointerId,{x:e.clientX,y:e.clientY});
-  if(pinch && ptrs3.size===2){ const [a,b]=[...ptrs3.values()]; const d=Math.hypot(a.x-b.x,a.y-b.y); orbit.r=Math.max(orbit.r0*0.05,pinch.r*pinch.d/d); placeCam(); return; }
+  if(pinch && ptrs3.size===2){ const [a,b]=[...ptrs3.values()]; const d=Math.hypot(a.x-b.x,a.y-b.y); if(Math.abs(d-pinch.d)>12) tap3.moved=true; orbit.r=Math.max(orbit.r0*0.05,pinch.r*pinch.d/d); placeCam(); return; }
   if(!drag3 || drag3.mode==='none') return;
   if(drag3.mode==='act'){
     const evs=samples(e), list=evs.length>8 ? evs.filter((_,i)=>i%Math.ceil(evs.length/8)===0||i===evs.length-1) : evs;
@@ -783,14 +835,21 @@ c3d.addEventListener('pointermove',e=>{
     orbit.target.addScaledVector(right,-dx*s).addScaledVector(up,dy*s); }
   placeCam();
 });
-const end3=e=>{ ptrs3.delete(e.pointerId); if(ptrs3.size<2) pinch=null; if(drag3&&drag3.mode==='act') endStroke(); drag3=null; };
+const tap3={t:0,moved:false}, tap2={t:0,moved:false};
+function tapEnd(map,st){ if(map.size===0 && st.t && !st.moved && performance.now()-st.t<350){ doUndo(); toast('ย้อนกลับ'); } if(map.size===0) st.t=0; }
+const end3=e=>{ ptrs3.delete(e.pointerId); tapEnd(ptrs3,tap3); if(ptrs3.size<2) pinch=null; if(drag3&&drag3.mode==='act') endStroke(); drag3=null; };
 c3d.addEventListener('pointerup',end3); c3d.addEventListener('pointercancel',end3);
 c3d.addEventListener('wheel',e=>{ e.preventDefault(); orbit.r=Math.max(orbit.r0*0.05, orbit.r*Math.exp(e.deltaY*0.0012)); placeCam(); },{passive:false});
 $('resetCam').onclick=resetCam;
+function zoom3(f){ orbit.r=Math.max(orbit.r0*0.05, Math.min(orbit.r0*20, orbit.r*f)); placeCam(); }
+function zoom2Center(f){ const r=c2d.getBoundingClientRect(); zoom2At(f, r.left+r.width/2, r.top+r.height/2); }
+document.querySelectorAll('.navbar [data-act]').forEach(b=>b.onclick=()=>({undo:doUndo, redo:doRedo, in3:()=>zoom3(0.8), out3:()=>zoom3(1.25), in2:()=>zoom2Center(1.25), out2:()=>zoom2Center(0.8)})[b.dataset.act]());
+$('nav3orbit').onclick=()=>setNav3('orbit'); $('nav3pan').onclick=()=>setNav3('pan');
+$('nav2pan').onclick=()=>setNav2(!nav2);
 
 /* ---------- 2D view ---------- */
 const c2d=$('c2d'), v2=c2d.getContext('2d'); const view={s:1,ox:0,oy:0}; let cursor2=null, cursorP=1;
-function fit2d(){ const r=c2d.getBoundingClientRect(); const s=Math.min((r.width-24)/W,(r.height-24)/H); view.s=Math.max(0.05,s); view.ox=(r.width-W*view.s)/2; view.oy=(r.height-H*view.s)/2; need2d=true; }
+function fit2d(){ const r=c2d.getBoundingClientRect(), bar=56, top=40; const s=Math.min((r.width-24)/W,(r.height-bar-top)/H); view.s=Math.max(0.05,s); view.ox=(r.width-W*view.s)/2; view.oy=top+(r.height-bar-top-H*view.s)/2; need2d=true; }
 $('fit2d').onclick=()=>{ userView=false; fit2d(); };
 function toTex(e){ const r=c2d.getBoundingClientRect(); return [(e.clientX-r.left-view.ox)/view.s, (e.clientY-r.top-view.oy)/view.s]; }
 let drag2=null; c2d.addEventListener('contextmenu',e=>e.preventDefault());
@@ -799,10 +858,16 @@ c2d.addEventListener('pointerdown',e=>{
   if(palmBlocked(e)) return;
   const info=readPointer(e);
   try{ c2d.setPointerCapture(e.pointerId); }catch(err){} ptrs2.set(e.pointerId,{x:e.clientX,y:e.clientY});
-  if(ptrs2.size===2){ if(stroke) endStroke(); drag2=null; const [a,b]=[...ptrs2.values()]; pinch2={d:Math.hypot(a.x-b.x,a.y-b.y), s:view.s}; return; }
+  if(ptrs2.size===2){ if(stroke){ endStroke(); doUndo(); redo.length=0; updUndo(); } drag2=null; const [a,b]=[...ptrs2.values()]; pinch2={d:Math.hypot(a.x-b.x,a.y-b.y), s:view.s}; twoTap(ptrs2,tap2); return; }
   const [x,y]=toTex(e);
-  const inside = x>=0&&y>=0&&x<W&&y<H, primary = e.button===0 || info.eraser;
-  if(primary && (tool!=='view'||info.eraser) && inside){ const painting=actStart(x/W,1-y/H,info,e); drag2= painting?{mode:'act'}:{mode:'none'}; }
+  const inside = x>=0&&y>=0&&x<W&&y<H;
+  if(info.barrel){ const b=$('barrel').value;
+    if(b==='undo'){ doUndo(); drag2={mode:'none'}; return; }
+    if(b==='picker'){ if(inside) pickAt(Math.min(W-1,Math.floor(x)),Math.min(H-1,Math.floor(y))); drag2={mode:'none'}; return; }
+    if(b==='eraser') info.eraser=true;
+    else { drag2={mode:'pan',x:e.clientX,y:e.clientY}; return; } }
+  const primary = e.button===0 || info.eraser, navNow = nav2 || spaceDown;
+  if(primary && !navNow && (tool!=='view'||info.eraser) && inside){ const painting=actStart(x/W,1-y/H,info,e); drag2= painting?{mode:'act'}:{mode:'none'}; }
   else drag2={mode:'pan',x:e.clientX,y:e.clientY};
 });
 c2d.addEventListener('pointermove',e=>{
@@ -810,12 +875,12 @@ c2d.addEventListener('pointermove',e=>{
   if(ptrs2.has(e.pointerId)) ptrs2.set(e.pointerId,{x:e.clientX,y:e.clientY});
   const [x,y]=toTex(e); cursor2=[x,y]; cursorP = info && (e.buttons&1) ? info.p : 1; need2d=true;
   $('foot2d').textContent = (x>=0&&y>=0&&x<W&&y<H) ? `${W}×${H} · x ${Math.floor(x)} y ${Math.floor(y)}` : `${W}×${H}`;
-  if(pinch2 && ptrs2.size===2){ const [a,b]=[...ptrs2.values()]; const d=Math.hypot(a.x-b.x,a.y-b.y); zoom2At(pinch2.s*d/pinch2.d/view.s, (a.x+b.x)/2,(a.y+b.y)/2); return; }
+  if(pinch2 && ptrs2.size===2){ const [a,b]=[...ptrs2.values()]; const d=Math.hypot(a.x-b.x,a.y-b.y); if(Math.abs(d-pinch2.d)>12) tap2.moved=true; zoom2At(pinch2.s*d/pinch2.d/view.s, (a.x+b.x)/2,(a.y+b.y)/2); return; }
   if(!drag2 || drag2.mode==='none') return;
   if(drag2.mode==='act'){ for(const ev of samples(e)){ const [sx,sy]=toTex(ev); strokeTo(sx,sy,readPointer(ev).p,true); } compose(); return; }
   userView=true; view.ox+=e.clientX-drag2.x; view.oy+=e.clientY-drag2.y; drag2.x=e.clientX; drag2.y=e.clientY; need2d=true;
 });
-const end2=e=>{ ptrs2.delete(e.pointerId); if(ptrs2.size<2) pinch2=null; if(drag2&&drag2.mode==='act') endStroke(); drag2=null; };
+const end2=e=>{ ptrs2.delete(e.pointerId); tapEnd(ptrs2,tap2); if(ptrs2.size<2) pinch2=null; if(drag2&&drag2.mode==='act') endStroke(); drag2=null; };
 c2d.addEventListener('pointerup',end2); c2d.addEventListener('pointercancel',end2);
 c2d.addEventListener('pointerleave',()=>{cursor2=null; need2d=true;});
 function zoom2At(f,cx,cy){ const r=c2d.getBoundingClientRect(); const mx=cx-r.left, my=cy-r.top; const ns=Math.min(40,Math.max(0.05,view.s*f)); f=ns/view.s;
@@ -830,6 +895,7 @@ function draw2d(){
   v2.save(); v2.beginPath(); v2.rect(view.ox,view.oy,W*view.s,H*view.s); v2.clip();
   const cs=10; for(let yy=0;yy<H*view.s;yy+=cs) for(let xx=0;xx<W*view.s;xx+=cs){ v2.fillStyle=((xx/cs+yy/cs)&1)?'#cfcfd6':'#ececf0'; v2.fillRect(view.ox+xx,view.oy+yy,cs,cs); }
   v2.restore();
+  $('zoom2').textContent=Math.round(view.s*100)+'%';
   v2.imageSmoothingEnabled = view.s<1; v2.drawImage(tex,view.ox,view.oy,W*view.s,H*view.s);
   if($('uvToggle').checked && uvTris){
     v2.strokeStyle=cssVar('--uv'); v2.globalAlpha=0.75; v2.lineWidth=0.7; v2.beginPath();
@@ -889,17 +955,24 @@ addEventListener('keydown',e=>{
   if(e.key==='Escape'){ if(!$('dlg').hidden) return; if(!$('drawer').hidden){ lib.close(); return; } }
   if(e.altKey && (e.key==='ArrowLeft'||e.key==='ArrowRight')){ e.preventDefault(); lib.step(e.key==='ArrowRight'?1:-1); return; }
   if(!$('drawer').hidden) return;
-  if(e.target.matches('input,select')) return;
-  const k=e.key.toLowerCase();
+  const tg=e.target, isEl=tg && typeof tg.matches==='function';
+  const typing = isEl && tg.matches('input[type=text],input[type=search],textarea,select,[contenteditable]');
+  if(typing) return;
+  // e.code is the physical key, so shortcuts work with a Thai (or any) keyboard layout
+  const c=e.code||'', k = c.startsWith('Key') ? c.slice(3).toLowerCase() : c.startsWith('Digit') ? c.slice(5) : c.startsWith('Numpad')&&/\d$/.test(c) ? c.slice(-1) : c==='BracketLeft' ? '[' : c==='BracketRight' ? ']' : (e.key||'').toLowerCase();
   if((e.ctrlKey||e.metaKey)&&k==='z'){ e.preventDefault(); e.shiftKey?doRedo():doUndo(); return; }
   if((e.ctrlKey||e.metaKey)&&k==='y'){ e.preventDefault(); doRedo(); return; }
   if(e.ctrlKey||e.metaKey||e.altKey) return;
+  if(c==='Space'){ e.preventDefault(); if(!spaceDown){ spaceDown=true; $('pane2d').classList.add('nav'); $('pane3d').classList.add('nav'); } return; }
+  if(isEl && tg.matches('input[type=range]') && /^(Arrow|Home|End|Page)/.test(e.key)) return;
   const map={b:'brush',e:'eraser',g:'fill',r:'recolor',i:'picker',v:'view'}; if(map[k]) setTool(map[k]);
   if(k==='t'){ setTool('brush'); setMode('tint'); }
   const tips=['pen','soft','pixel','spray','grunge','stitch']; if(/^[1-6]$/.test(k) && PAINTS.includes(tool)) setTip(tips[+k-1]);
   if(k==='['||k===']'){ const v=+$('size').value, st=v<10?1:v<40?2:5; $('size').value=Math.min(120,Math.max(1,v+(k===']'?st:-st))); $('size').dispatchEvent(new Event('input')); }
 });
 $('undoBtn').onclick=doUndo; $('redoBtn').onclick=doRedo;
+addEventListener('keyup',e=>{ if(e.code==='Space'){ spaceDown=false; $('pane2d').classList.toggle('nav',nav2); $('pane3d').classList.toggle('nav',!!nav3); } });
+addEventListener('blur',()=>{ spaceDown=false; altTip=false; });
 
 /* ---------- toast ---------- */
 let tt; function toast(m){ const t=$('toast'); t.textContent=m; t.hidden=false; clearTimeout(tt); tt=setTimeout(()=>t.hidden=true,2600); }
@@ -1229,7 +1302,7 @@ function sampleTexture(){
 
 /* ---------- boot with the sample ---------- */
 (async()=>{
-  setTip('pen'); setMode('normal'); setFillBy('island'); setTool('brush'); rememberColor(); size3d(); setBg(); drawTipIcons(); drawPreview();
+  loadPen(); updUndo(); setTip('pen'); setMode('normal'); setFillBy('island'); setTool('brush'); rememberColor(); size3d(); setBg(); drawTipIcons(); drawPreview();
   try{
     setModel(sampleOBJ());
     const img=await loadImage(sampleTexture());
