@@ -27,8 +27,13 @@ jobs:
       - name: Build default library index
         run: node scripts/build-library.mjs site/library
       - uses: actions/configure-pages@v5
+      # Name the artifact per attempt: a re-run keeps the same run_id and the
+      # earlier attempt's artifact, which makes deploy-pages find two.
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site
+          name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
       - id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          artifact_name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
