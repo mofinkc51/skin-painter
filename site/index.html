@@ -1117,8 +1117,20 @@ const lib = (() => {
     n=n.replace(/_/g,' ').replace(/([a-z0-9])([A-Z])/g,'$1 $2').trim();
     return n.charAt(0).toUpperCase()+n.slice(1);
   }
+  // "pack#bytes=a-b" = a slice of a bundled library file (see scripts/build-library.mjs --pack)
+  const packs=new Map();
+  async function fetchRange(ref){
+    const [url,frag]=ref.split('#bytes='); const [a,b]=frag.split('-').map(Number);
+    if(!packs.has(url)){
+      const r=await fetch(url,{headers:{Range:`bytes=${a}-${b}`}});
+      if(r.status===206) return r.blob();
+      if(!r.ok) throw new Error(`โหลดไฟล์ไม่ได้ (${r.status})`);
+      packs.set(url, r.blob());          // server ignored Range: keep the whole bundle and slice it
+    }
+    return (await packs.get(url)).slice(a,b+1);
+  }
   const getFile = ref => typeof ref==='string'
-    ? fetch(ref).then(r=>{ if(!r.ok) throw new Error(`โหลดไฟล์ไม่ได้ (${r.status})`); return r.blob(); })
+    ? (ref.includes('#bytes=') ? fetchRange(ref) : fetch(ref).then(r=>{ if(!r.ok) throw new Error(`โหลดไฟล์ไม่ได้ (${r.status})`); return r.blob(); }))
     : ref instanceof File ? Promise.resolve(ref) : ref.getFile();
   const LIB_URL = (()=>{ try{ return new URLSearchParams(location.search).get('lib') || 'library/index.json'; }catch(e){ return 'library/index.json'; } })();
 
@@ -1188,7 +1200,7 @@ const lib = (() => {
     if(!man || !Array.isArray(man.items) || !man.items.length) return false;
     const baseURL=new URL(LIB_URL, location.href);
     const items=man.items.filter(x=>x && Array.isArray(x.path) && x.obj).map(x=>{
-      const path=x.path.map(String), objName=decodeURIComponent(String(x.obj).split('/').pop());
+      const path=x.path.map(String), objName=x.objName ? String(x.objName) : decodeURIComponent(String(x.obj).split('#')[0].split('/').pop());
       const base=objName.replace(/\.(obj|glb)$/i,'');
       const it={ glb:/\.glb$/i.test(objName), id:'default:'+path.join('/')+'#'+base, dir:path, char: path.length>=2?path[path.length-2]:'(ราก)', folder: path[path.length-1]||base,
         base, obj:new URL(x.obj,baseURL).href, objName, png: x.png?new URL(x.png,baseURL).href:null, pngName: x.pngName || base+'_texture.png' };
@@ -1267,7 +1279,7 @@ const lib = (() => {
       img.src=S.urls.get(it.id); }catch(e){} return; }
     if(!ref) return;
     const key=it.id+(S.edited.has(it.dir.join('/'))?'#e':'');
-    if(typeof ref==='string'){ img.loading='lazy'; img.src=ref; return; }
+    if(typeof ref==='string' && !ref.includes('#bytes=')){ img.loading='lazy'; img.src=ref; return; }
     try{ if(!S.urls.has(key)) S.urls.set(key, URL.createObjectURL(await getFile(ref))); img.src=S.urls.get(key); }catch(e){}
   }
   function card(it){

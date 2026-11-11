@@ -25,7 +25,10 @@ jobs:
       - name: Check site files
         run: test -f site/index.html
       - name: Build default library index
-        run: node scripts/build-library.mjs site/library
+        # bundles the library into one file per character (Pages cancels deploys over 10 min)
+        run: node scripts/build-library.mjs site/library --pack
+      - name: Site size
+        run: echo "$(find site -type f | wc -l) files, $(du -sh site | cut -f1)"
       - uses: actions/configure-pages@v5
       # Name the artifact per attempt: a re-run keeps the same run_id and the
       # earlier attempt's artifact, which makes deploy-pages find two.
